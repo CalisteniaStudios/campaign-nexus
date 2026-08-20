@@ -1,0 +1,90 @@
+<div class="cn-config-scroll">
+  <section class="cn-config-hero">
+    <span><i class="fa-solid fa-compass"></i></span>
+    <div><h1>Campaign Nexus</h1><p>{{localize "CampaignNexus.Config.Intro"}}</p></div>
+  </section>
+
+  <section class="cn-config-section">
+    <h2><i class="fa-solid fa-heading"></i> {{localize "CampaignNexus.Config.Identity"}}</h2>
+    <div class="cn-config-grid two-columns">
+      <label><span>{{localize "CampaignNexus.Config.CampaignTitle"}}</span><input type="text" data-field="title" value="{{config.title}}"></label>
+      <label><span>{{localize "CampaignNexus.Config.Subtitle"}}</span><input type="text" data-field="subtitle" value="{{config.subtitle}}"></label>
+      <label class="cn-path-field"><span>{{localize "CampaignNexus.Config.Logo"}}</span><div><input type="text" data-field="logoSrc" value="{{config.logoSrc}}"><button type="button" data-action="browseGlobal" data-key="logoSrc" data-type="image" data-current="{{config.logoSrc}}"><i class="fa-solid fa-folder-open"></i></button></div></label>
+      <label class="cn-path-field"><span>{{localize "CampaignNexus.Config.Background"}}</span><div><input type="text" data-field="backgroundSrc" value="{{config.backgroundSrc}}"><button type="button" data-action="browseGlobal" data-key="backgroundSrc" data-type="imagevideo" data-current="{{config.backgroundSrc}}"><i class="fa-solid fa-folder-open"></i></button></div></label>
+    </div>
+  </section>
+
+  <section class="cn-config-section">
+    <h2><i class="fa-solid fa-palette"></i> {{localize "CampaignNexus.Config.Appearance"}}</h2>
+    <div class="cn-config-grid three-columns">
+      <label><span>{{localize "CampaignNexus.Config.AccentColor"}}</span><input type="color" data-field="accentColor" value="{{config.accentColor}}"></label>
+      <label><span>{{localize "CampaignNexus.Config.TextColor"}}</span><input type="color" data-field="textColor" value="{{config.textColor}}"></label>
+      <label><span>{{localize "CampaignNexus.Config.Transition"}}</span><input type="number" min="0" max="2000" step="50" data-field="transitionDuration" value="{{config.transitionDuration}}"></label>
+      <label class="wide"><span>{{localize "CampaignNexus.Config.Darkness"}}: <output data-output="darkness">{{darknessPercent}}%</output></span><input type="range" min="0" max="0.9" step="0.01" data-field="backdropDarkness" data-output="darkness" value="{{config.backdropDarkness}}"></label>
+    </div>
+  </section>
+
+  <section class="cn-config-section">
+    <h2><i class="fa-solid fa-music"></i> {{localize "CampaignNexus.Config.Music"}}</h2>
+    <div class="cn-config-grid two-columns">
+      <label class="cn-path-field wide"><span>{{localize "CampaignNexus.Config.MusicFile"}}</span><div><input type="text" data-field="musicSrc" value="{{config.musicSrc}}"><button type="button" data-action="browseGlobal" data-key="musicSrc" data-type="audio" data-current="{{config.musicSrc}}"><i class="fa-solid fa-folder-open"></i></button></div></label>
+      <label class="wide"><span>{{localize "CampaignNexus.Config.MusicVolume"}}: <output data-output="music">{{musicVolumePercent}}%</output></span><input type="range" min="0" max="1" step="0.01" data-field="musicVolume" data-output="music" value="{{config.musicVolume}}"></label>
+    </div>
+  </section>
+
+  <section class="cn-config-section">
+    <h2><i class="fa-solid fa-bars-staggered"></i> {{localize "CampaignNexus.Config.Sections"}}</h2>
+    <p class="cn-config-hint">{{localize "CampaignNexus.Config.SectionsHint"}}</p>
+    <div class="cn-section-list">
+      {{#each sections}}
+      <div class="cn-section-row" data-section-id="{{id}}">
+        <span class="cn-section-icon"><i class="{{icon}}"></i></span>
+        <label class="cn-section-enabled"><input type="checkbox" data-section-field="enabled" {{checked enabled}}><span>{{displayName}}</span></label>
+        <input type="text" data-section-field="label" value="{{label}}" placeholder="{{localize "CampaignNexus.Config.CustomLabel"}}">
+        <div class="cn-inline-path"><input type="text" data-section-field="backgroundSrc" value="{{backgroundSrc}}" placeholder="{{localize "CampaignNexus.Config.SectionBackground"}}"><button type="button" data-action="browseSection" data-index="{{index}}" data-current="{{backgroundSrc}}"><i class="fa-solid fa-folder-open"></i></button></div>
+        <div class="cn-order-buttons"><button type="button" data-action="moveSection" data-index="{{index}}" data-direction="-1" {{#if first}}disabled{{/if}}><i class="fa-solid fa-chevron-up"></i></button><button type="button" data-action="moveSection" data-index="{{index}}" data-direction="1" {{#if last}}disabled{{/if}}><i class="fa-solid fa-chevron-down"></i></button></div>
+      </div>
+      {{/each}}
+    </div>
+  </section>
+
+  <section class="cn-config-section">
+    <div class="cn-section-title-row"><div><h2><i class="fa-solid fa-map"></i> {{localize "CampaignNexus.Config.PlayerMaps"}}</h2><p>{{localize "CampaignNexus.Config.PlayerMapsHint"}}</p></div><button type="button" data-action="addMap" class="cn-config-primary"><i class="fa-solid fa-plus"></i> {{localize "CampaignNexus.Config.AddMap"}}</button></div>
+    <div class="cn-map-list">
+      {{#each playerMaps}}
+      <div class="cn-map-row" data-player-map-index="{{index}}" data-map-id="{{id}}">
+        <span class="cn-map-number">{{position}}</span>
+        <input type="text" data-map-field="name" value="{{name}}" placeholder="{{localize "CampaignNexus.Config.MapName"}}">
+        <div class="cn-inline-path"><input type="text" data-map-field="src" value="{{src}}" placeholder="{{localize "CampaignNexus.Config.MapFile"}}"><button type="button" data-action="browseMap" data-index="{{index}}" data-current="{{src}}"><i class="fa-solid fa-folder-open"></i></button></div>
+        <div class="cn-order-buttons"><button type="button" data-action="moveMap" data-index="{{index}}" data-direction="-1" {{#if first}}disabled{{/if}}><i class="fa-solid fa-chevron-up"></i></button><button type="button" data-action="moveMap" data-index="{{index}}" data-direction="1" {{#if last}}disabled{{/if}}><i class="fa-solid fa-chevron-down"></i></button></div>
+        <button type="button" data-action="removeMap" data-index="{{index}}" class="cn-danger"><i class="fa-solid fa-trash"></i></button>
+      </div>
+      {{else}}<p class="cn-config-empty">{{localize "CampaignNexus.Config.NoPlayerMaps"}}</p>{{/each}}
+    </div>
+  </section>
+
+  <section class="cn-config-section">
+    <h2><i class="fa-solid fa-store"></i> {{localize "CampaignNexus.Config.Shops"}}</h2>
+    <p class="cn-config-hint">{{localize "CampaignNexus.Config.ShopsHint"}}</p>
+    <div class="cn-selection-grid" data-collection="shops">
+      {{#each actors}}<label><input type="checkbox" value="{{uuid}}" {{checked selected}}><img src="{{img}}" alt=""><span>{{name}}</span></label>{{else}}<p>{{localize "CampaignNexus.Config.NoActors"}}</p>{{/each}}
+    </div>
+  </section>
+
+  <section class="cn-config-section">
+    <h2><i class="fa-solid fa-book"></i> {{localize "CampaignNexus.Config.CuratedJournals"}}</h2>
+    <p class="cn-config-hint">{{localize "CampaignNexus.Config.CuratedHint"}}</p>
+    <div class="cn-curated-columns">
+      <div data-collection="quests"><h3>{{localize "CampaignNexus.Sections.Quests"}}</h3>{{#each journals}}<label><input type="checkbox" value="{{uuid}}" {{checked questSelected}}><span>{{name}}</span></label>{{else}}<p>{{localize "CampaignNexus.Config.NoJournals"}}</p>{{/each}}</div>
+      <div data-collection="systems"><h3>{{localize "CampaignNexus.Sections.Systems"}}</h3>{{#each journals}}<label><input type="checkbox" value="{{uuid}}" {{checked systemSelected}}><span>{{name}}</span></label>{{else}}<p>{{localize "CampaignNexus.Config.NoJournals"}}</p>{{/each}}</div>
+    </div>
+  </section>
+
+  <section class="cn-config-section">
+    <h2><i class="fa-solid fa-play"></i> {{localize "CampaignNexus.Config.Lobby"}}</h2>
+    <div class="cn-config-grid two-columns">
+      <label class="cn-checkbox-row"><input type="checkbox" data-field="lockPlayers" {{checked config.lockPlayers}}><span><strong>{{localize "CampaignNexus.Config.LockPlayers"}}</strong><small>{{localize "CampaignNexus.Config.LockPlayersHint"}}</small></span></label>
+      <label><span>{{localize "CampaignNexus.Config.StartScene"}}</span><select data-field="startSceneId">{{#each scenes}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/each}}</select></label>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,132 @@
+{
+  "CampaignNexus": {
+    "Actions": {
+      "Activate": "Activate",
+      "Close": "Close",
+      "Configure": "Configure Campaign Nexus",
+      "Home": "Home",
+      "ShowAll": "Open for Everyone",
+      "StartGame": "Start Game",
+      "View": "View"
+    },
+    "Chat": {
+      "Placeholder": "Write a message...",
+      "Send": "Send",
+      "Unknown": "Unknown"
+    },
+    "Config": {
+      "AccentColor": "Accent color",
+      "AddMap": "Add map",
+      "Appearance": "Appearance",
+      "Background": "Global background image or video",
+      "CampaignTitle": "Campaign title",
+      "CuratedHint": "Select which journals appear as quests and game systems/reference material.",
+      "CuratedJournals": "Quests and systems",
+      "CustomLabel": "Custom label (optional)",
+      "Darkness": "Background darkness",
+      "Identity": "Campaign identity",
+      "Intro": "Build a cinematic, permission-aware campaign menu shown inside your world.",
+      "Lobby": "Lobby and Start Game",
+      "LockPlayers": "Lock players in the lobby",
+      "LockPlayersHint": "Players cannot close the menu until the GM starts the game.",
+      "Logo": "Campaign logo",
+      "MapFile": "Image or video file",
+      "MapName": "Map name",
+      "Music": "Menu music",
+      "MusicFile": "Audio file",
+      "MusicVolume": "Default volume",
+      "NoActors": "No actors found.",
+      "NoJournals": "No journals found.",
+      "NoPlayerMaps": "No player maps configured.",
+      "NoScene": "Do not change scene",
+      "PlayerMaps": "Player maps",
+      "PlayerMapsHint": "Players only see the curated images and videos added here. They never receive the GM scene list.",
+      "Preview": "Preview",
+      "Reset": "Reset",
+      "Save": "Save configuration",
+      "SectionBackground": "Section background (optional)",
+      "Sections": "Menu sections",
+      "SectionsHint": "Enable, rename, reorder, and give each section its own background.",
+      "Shops": "Stylish Shop stores",
+      "ShopsHint": "Select the shop actors that should appear. This section opens their sheets through Stylish Shop when that paid module is active.",
+      "StartScene": "Scene activated by Start Game",
+      "Subtitle": "Subtitle",
+      "TextColor": "Text color",
+      "Title": "Campaign Nexus Configuration",
+      "Transition": "Transition duration (ms)"
+    },
+    "Empty": {
+      "Characters": "No accessible characters found.",
+      "Chat": "No messages yet.",
+      "Compendiums": "No accessible compendiums found.",
+      "Curated": "Nothing has been added here yet.",
+      "Journals": "No accessible journals found.",
+      "Maps": "No maps found.",
+      "PlayerMaps": "The Game Master has not shared any maps yet.",
+      "Shops": "No shops are available."
+    },
+    "Errors": {
+      "FilePickerUnavailable": "Foundry's file picker is unavailable."
+    },
+    "Keybindings": {
+      "Toggle": {
+        "Hint": "Open or close the Campaign Nexus overlay.",
+        "Name": "Toggle Campaign Nexus"
+      }
+    },
+    "Maps": {
+      "Active": "Active scene",
+      "Untitled": "Untitled map"
+    },
+    "Navigation": "Campaign menu",
+    "Notifications": {
+      "Saved": "Campaign Nexus configuration saved."
+    },
+    "Page": {
+      "ItemCount": "{count} items"
+    },
+    "Search": {
+      "Characters": "Search characters...",
+      "Compendiums": "Search compendiums...",
+      "Entries": "Search entries...",
+      "Journals": "Search journals...",
+      "Maps": "Search maps...",
+      "Shops": "Search shops..."
+    },
+    "Sections": {
+      "Characters": "Characters",
+      "Chat": "Chat",
+      "Compendiums": "Compendiums",
+      "Journals": "Journals",
+      "Maps": "Maps",
+      "Quests": "Quests",
+      "Settings": "Settings",
+      "Shops": "Shops",
+      "Systems": "Systems"
+    },
+    "Settings": {
+      "Configuration": { "Name": "Campaign Nexus configuration" },
+      "LobbyState": { "Name": "Campaign Nexus lobby state" },
+      "Menu": {
+        "Hint": "Customize the campaign menu, its pages, media, shops, and lobby behavior.",
+        "Label": "Open configuration",
+        "Name": "Campaign Nexus"
+      },
+      "ReduceMotion": {
+        "Hint": "Disables most Campaign Nexus transitions on this browser.",
+        "Name": "Reduce Campaign Nexus motion"
+      }
+    },
+    "Shops": {
+      "RequiredDetail": "Install and activate Stylish Shop to use this section.",
+      "RequiredTitle": "Stylish Shop is required"
+    },
+    "Status": {
+      "Preview": "Preview mode",
+      "Waiting": "Waiting for the Game Master"
+    },
+    "Warnings": {
+      "Locked": "The Game Master has locked the campaign menu."
+    }
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "CampaignNexus": {
+    "Actions": {
+      "Activate": "Ativar",
+      "Close": "Fechar",
+      "Configure": "Configurar o Campaign Nexus",
+      "Home": "Início",
+      "ShowAll": "Abrir para todos",
+      "StartGame": "Iniciar o jogo",
+      "View": "Visualizar"
+    },
+    "Chat": {
+      "Placeholder": "Escreva uma mensagem...",
+      "Send": "Enviar",
+      "Unknown": "Desconhecido"
+    },
+    "Config": {
+      "AccentColor": "Cor de destaque",
+      "AddMap": "Adicionar mapa",
+      "Appearance": "Aparência",
+      "Background": "Imagem ou vídeo de fundo global",
+      "CampaignTitle": "Título da campanha",
+      "CuratedHint": "Selecione quais diários aparecem como missões e sistemas ou materiais de referência.",
+      "CuratedJournals": "Missões e sistemas",
+      "CustomLabel": "Nome personalizado (opcional)",
+      "Darkness": "Escurecimento do fundo",
+      "Identity": "Identidade da campanha",
+      "Intro": "Crie um menu cinematográfico dentro do mundo, respeitando as permissões de cada jogador.",
+      "Lobby": "Sala de espera e Iniciar o jogo",
+      "LockPlayers": "Prender jogadores na sala de espera",
+      "LockPlayersHint": "Os jogadores não poderão fechar o menu até o mestre iniciar o jogo.",
+      "Logo": "Logótipo da campanha",
+      "MapFile": "Ficheiro de imagem ou vídeo",
+      "MapName": "Nome do mapa",
+      "Music": "Música do menu",
+      "MusicFile": "Ficheiro de áudio",
+      "MusicVolume": "Volume padrão",
+      "NoActors": "Nenhum ator encontrado.",
+      "NoJournals": "Nenhum diário encontrado.",
+      "NoPlayerMaps": "Nenhum mapa de jogador configurado.",
+      "NoScene": "Não mudar de cena",
+      "PlayerMaps": "Mapas dos jogadores",
+      "PlayerMapsHint": "Os jogadores veem somente as imagens e vídeos adicionados aqui. Nunca recebem a lista de cenas do mestre.",
+      "Preview": "Visualizar",
+      "Reset": "Redefinir",
+      "Save": "Guardar configuração",
+      "SectionBackground": "Fundo da secção (opcional)",
+      "Sections": "Secções do menu",
+      "SectionsHint": "Ative, renomeie, reordene e escolha um fundo próprio para cada secção.",
+      "Shops": "Lojas do Stylish Shop",
+      "ShopsHint": "Selecione os atores de loja que devem aparecer. Esta secção abre as suas fichas pelo Stylish Shop quando esse módulo pago estiver ativo.",
+      "StartScene": "Cena ativada por Iniciar o jogo",
+      "Subtitle": "Subtítulo",
+      "TextColor": "Cor do texto",
+      "Title": "Configuração do Campaign Nexus",
+      "Transition": "Duração da transição (ms)"
+    },
+    "Empty": {
+      "Characters": "Nenhuma personagem acessível encontrada.",
+      "Chat": "Ainda não há mensagens.",
+      "Compendiums": "Nenhum compêndio acessível encontrado.",
+      "Curated": "Nada foi adicionado aqui ainda.",
+      "Journals": "Nenhum diário acessível encontrado.",
+      "Maps": "Nenhum mapa encontrado.",
+      "PlayerMaps": "O mestre ainda não partilhou nenhum mapa.",
+      "Shops": "Nenhuma loja está disponível."
+    },
+    "Errors": { "FilePickerUnavailable": "O seletor de ficheiros do Foundry não está disponível." },
+    "Keybindings": { "Toggle": { "Hint": "Abre ou fecha o ecrã do Campaign Nexus.", "Name": "Alternar Campaign Nexus" } },
+    "Maps": { "Active": "Cena ativa", "Untitled": "Mapa sem nome" },
+    "Navigation": "Menu da campanha",
+    "Notifications": { "Saved": "Configuração do Campaign Nexus guardada." },
+    "Page": { "ItemCount": "{count} itens" },
+    "Search": {
+      "Characters": "Procurar personagens...",
+      "Compendiums": "Procurar compêndios...",
+      "Entries": "Procurar entradas...",
+      "Journals": "Procurar diários...",
+      "Maps": "Procurar mapas...",
+      "Shops": "Procurar lojas..."
+    },
+    "Sections": {
+      "Characters": "Personagens",
+      "Chat": "Chat",
+      "Compendiums": "Compêndios",
+      "Journals": "Diários",
+      "Maps": "Mapas",
+      "Quests": "Missões",
+      "Settings": "Definições",
+      "Shops": "Lojas",
+      "Systems": "Sistemas"
+    },
+    "Settings": {
+      "Configuration": { "Name": "Configuração do Campaign Nexus" },
+      "LobbyState": { "Name": "Estado da sala do Campaign Nexus" },
+      "Menu": {
+        "Hint": "Personalize o menu da campanha, as suas páginas, multimédia, lojas e o funcionamento da sala de espera.",
+        "Label": "Abrir configuração",
+        "Name": "Campaign Nexus"
+      },
+      "ReduceMotion": {
+        "Hint": "Desativa a maioria das transições do Campaign Nexus neste navegador.",
+        "Name": "Reduzir movimentos do Campaign Nexus"
+      }
+    },
+    "Shops": {
+      "RequiredDetail": "Instale e ative o Stylish Shop para usar esta secção.",
+      "RequiredTitle": "Stylish Shop é necessário"
+    },
+    "Status": { "Preview": "Modo de visualização", "Waiting": "A aguardar o mestre" },
+    "Warnings": { "Locked": "O mestre bloqueou o menu da campanha." }
+  }
+}
