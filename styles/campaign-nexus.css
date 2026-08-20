@@ -1,6 +1,7 @@
 :root {
   --cn-accent: #d7a642;
   --cn-text: #ffffff;
+  --cn-bar-color: #020307;
   --cn-darkness: 0.46;
   --cn-transition: 500ms;
 }
@@ -89,7 +90,11 @@ body.campaign-nexus-active {
   min-height: 76px;
   padding: 0.8rem clamp(1rem, 3vw, 3rem);
   border-bottom: 1px solid color-mix(in srgb, var(--cn-accent) 45%, transparent);
-  background: linear-gradient(180deg, rgba(2, 3, 7, 0.92), rgba(2, 3, 7, 0.56));
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--cn-bar-color) 94%, transparent),
+    color-mix(in srgb, var(--cn-bar-color) 68%, transparent)
+  );
   backdrop-filter: blur(14px);
 }
 
@@ -202,7 +207,7 @@ body.campaign-nexus-active {
   padding-inline: clamp(0.5rem, 2vw, 2rem);
   overflow-x: auto;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(2, 3, 7, 0.66);
+  background: color-mix(in srgb, var(--cn-bar-color) 78%, transparent);
   scrollbar-width: thin;
   backdrop-filter: blur(10px);
 }
@@ -268,10 +273,12 @@ body.campaign-nexus-active {
 }
 
 .cn-home-hero {
+  width: min(100%, 1050px);
   max-width: 1050px;
   margin: 0 auto;
   text-align: center;
   text-shadow: 0 3px 20px #000, 0 1px 3px #000;
+  transform: translateY(-1.5vh);
 }
 
 .cn-home-hero h1 {
@@ -609,16 +616,18 @@ button.cn-library-card {
 
 .cn-journal-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
   gap: clamp(1rem, 2.2vw, 2rem);
   align-items: start;
+  width: min(100%, 1360px);
+  margin: 0 auto;
 }
 
 .cn-journal-book-card {
   position: relative;
   display: grid;
   place-items: center;
-  aspect-ratio: 3 / 2;
+  aspect-ratio: 501 / 342;
   min-width: 0;
   padding: 0;
   overflow: visible;
@@ -642,10 +651,13 @@ button.cn-library-card {
 .cn-journal-book-card img {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border: 0;
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: none !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  object-fit: contain !important;
+  border: 0 !important;
 }
 
 .cn-journal-book-card > span {
@@ -653,15 +665,17 @@ button.cn-library-card {
   z-index: 1;
   display: grid;
   place-items: center;
-  width: 76%;
-  min-height: 50%;
-  padding: 1.2rem 1.6rem 1.5rem;
-  color: var(--cn-text);
+  width: 68%;
+  min-height: 46%;
+  max-height: 62%;
+  padding: clamp(1.4rem, 3vw, 2.4rem) clamp(1.8rem, 4vw, 3.2rem);
+  overflow: hidden;
+  color: var(--cn-text) !important;
   text-align: center;
   text-wrap: balance;
   text-shadow: 0 1px 2px rgba(255, 255, 255, 0.28), 0 2px 5px rgba(0, 0, 0, 0.45);
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(1rem, 1.7vw, 1.45rem);
+  font-size: clamp(1.1rem, 1.65vw, 1.65rem);
   font-weight: 700;
   line-height: 1.12;
 }
@@ -876,8 +890,17 @@ button.cn-library-card {
   min-height: 70px;
   padding: 0.7rem clamp(1rem, 3vw, 3rem);
   border-top: 1px solid rgba(255, 255, 255, 0.13);
-  background: rgba(2, 3, 7, 0.76);
+  background: color-mix(in srgb, var(--cn-bar-color) 84%, transparent);
   backdrop-filter: blur(14px);
+}
+
+.cn-overlay.bars-hidden .cn-header,
+.cn-overlay.bars-hidden .cn-navigation,
+.cn-overlay.bars-hidden .cn-footer {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .cn-footer-status {

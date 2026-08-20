@@ -57,6 +57,8 @@ function readDraft(app) {
     musicVolume: field(root, "musicVolume")?.value,
     accentColor: field(root, "accentColor")?.value,
     textColor: field(root, "textColor")?.value,
+    barColor: field(root, "barColor")?.value,
+    showBars: field(root, "showBars")?.checked,
     backdropDarkness: field(root, "backdropDarkness")?.value,
     transitionDuration: field(root, "transitionDuration")?.value,
     lockPlayers: field(root, "lockPlayers")?.checked,
@@ -237,8 +239,12 @@ export function createConfigApplicationClass() {
       }));
 
       const users = (game.users?.contents ?? [])
-        .filter((user) => !user.isGM)
-        .map((user) => ({ id: user.id, name: user.name }));
+        .map((user) => ({
+          id: user.id,
+          name: user.isGM
+            ? `${user.name} (${localize("CampaignNexus.Characters.Gamemaster", "GM")})`
+            : user.name
+        }));
       const actors = (game.actors?.contents ?? []).map((actor) => {
         const character = configuredCharacters.get(actor.uuid);
         const selectedUsers = new Set(character?.userIds ?? []);

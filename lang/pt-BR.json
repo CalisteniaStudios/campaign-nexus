@@ -15,6 +15,8 @@
       "Unknown": "Desconhecido"
     },
     "Characters": {
+      "All": "Todos",
+      "Gamemaster": "Mestre",
       "SelectPlayer": "Selecionar jogador"
     },
     "Config": {
@@ -22,11 +24,12 @@
       "AddMap": "Adicionar mapa",
       "Appearance": "Aparência",
       "Background": "Imagem ou vídeo de fundo global",
+      "BarColor": "Cor das barras",
       "CampaignTitle": "Título da campanha",
       "CharacterImage": "Imagem cinematográfica",
       "CharacterPlayers": "Jogadores vinculados",
       "Characters": "Personagens do Campaign Nexus",
-      "CharactersHint": "Escolha quais personagens aparecem, defina uma imagem opcional e vincule cada um aos jogadores que poderão vê-lo. As permissões do Foundry continuam sendo respeitadas.",
+      "CharactersHint": "Escolha quais personagens aparecem, defina uma imagem opcional e vincule cada um aos jogadores que poderão vê-lo. O retrato permanece visível; o Foundry decide se a ficha pode ser aberta.",
       "ActorImageFallback": "Usar imagem do ator",
       "CuratedHint": "Selecione quais diários aparecem como missões e sistemas ou materiais de referência.",
       "CuratedJournals": "Missões e sistemas",
@@ -53,6 +56,8 @@
       "Preview": "Visualizar",
       "Reset": "Redefinir",
       "Save": "Salvar configuração",
+      "ShowBars": "Exibir fundo das barras superior e inferior",
+      "ShowBarsHint": "Desative para deixar o cabeçalho, a navegação e o rodapé transparentes sobre a imagem de fundo.",
       "SectionBackground": "Fundo da seção (opcional)",
       "Sections": "Seções do menu",
       "SectionsHint": "Ative, renomeie, reordene e escolha um fundo próprio para cada seção.",

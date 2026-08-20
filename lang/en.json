@@ -15,6 +15,8 @@
       "Unknown": "Unknown"
     },
     "Characters": {
+      "All": "All",
+      "Gamemaster": "GM",
       "SelectPlayer": "Select player"
     },
     "Config": {
@@ -22,11 +24,12 @@
       "AddMap": "Add map",
       "Appearance": "Appearance",
       "Background": "Global background image or video",
+      "BarColor": "Bar color",
       "CampaignTitle": "Campaign title",
       "CharacterImage": "Cinematic image",
       "CharacterPlayers": "Linked players",
       "Characters": "Campaign Nexus characters",
-      "CharactersHint": "Choose which characters appear, set an optional display image, and link each one to the players who can see it. Foundry permissions are still enforced.",
+      "CharactersHint": "Choose which characters appear, set an optional display image, and link each one to the players who can see it. Portraits remain visible; Foundry decides whether a sheet can be opened.",
       "ActorImageFallback": "Use actor image",
       "CuratedHint": "Select which journals appear as quests and game systems/reference material.",
       "CuratedJournals": "Quests and systems",
@@ -53,6 +56,8 @@
       "Preview": "Preview",
       "Reset": "Reset",
       "Save": "Save configuration",
+      "ShowBars": "Show top and bottom bar backgrounds",
+      "ShowBarsHint": "Disable this to make the header, navigation, and footer transparent over the campaign background.",
       "SectionBackground": "Section background (optional)",
       "Sections": "Menu sections",
       "SectionsHint": "Enable, rename, reorder, and give each section its own background.",

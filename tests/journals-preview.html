@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Campaign Nexus — Diários</title>
+  <link rel="stylesheet" href="../styles/campaign-nexus.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <style>
+    body { margin: 0; background: #080a10; }
+    .cn-overlay {
+      --cn-accent: #d7a642;
+      --cn-text: #fff;
+      --cn-bar-color: #020307;
+      --cn-darkness: .46;
+      --cn-transition: 1ms;
+    }
+    .cn-background { background: radial-gradient(circle at 25% 20%, #645225, #142226 72%) !important; }
+  </style>
+</head>
+<body class="campaign-nexus-active">
+  <div class="cn-overlay is-visible is-gm" aria-hidden="false">
+    <div class="cn-background" aria-hidden="true"></div><div class="cn-shade" aria-hidden="true"></div>
+    <header class="cn-header">
+      <button class="cn-brand"><span class="cn-logo-slot"><i class="fa-solid fa-compass"></i></span><span class="cn-brand-copy"><strong>Fulgor dos Deuses</strong><small>A Cripta de Keenn</small></span></button>
+      <div class="cn-header-actions"><button class="cn-icon-button"><i class="fa-solid fa-gear"></i></button><button class="cn-icon-button"><i class="fa-solid fa-xmark"></i></button></div>
+    </header>
+    <nav class="cn-navigation"><button><i class="fa-solid fa-map"></i><span>Mapas</span></button><button><i class="fa-solid fa-users"></i><span>Personagens</span></button><button class="is-active"><i class="fa-solid fa-book-open"></i><span>Diários</span></button><button><i class="fa-solid fa-store"></i><span>Lojas</span></button><button><i class="fa-solid fa-list-check"></i><span>Missões</span></button><button><i class="fa-solid fa-box-archive"></i><span>Compêndios</span></button><button><i class="fa-solid fa-comments"></i><span>Chat</span></button></nav>
+    <main class="cn-content">
+      <header class="cn-page-header"><span class="cn-page-icon"><i class="fa-solid fa-book-open"></i></span><div><h1>Diários</h1><p>6 itens</p></div></header>
+      <label class="cn-search"><i class="fa-solid fa-magnifying-glass"></i><input placeholder="Procurar diários..."></label>
+      <div class="cn-journal-grid">
+        <button class="cn-journal-book-card"><img src="../assets/journal-open-book.png" alt=""><span>Mestre Arsenal</span></button>
+        <button class="cn-journal-book-card"><img src="../assets/journal-open-book.png" alt=""><span>Protetora Fullgori</span></button>
+        <button class="cn-journal-book-card"><img src="../assets/journal-open-book.png" alt=""><span>sequencerDatabase</span></button>
+        <button class="cn-journal-book-card"><img src="../assets/journal-open-book.png" alt=""><span>Cicatrizes de Keenn</span></button>
+        <button class="cn-journal-book-card"><img src="../assets/journal-open-book.png" alt=""><span>Guardião das Cinzas</span></button>
+        <button class="cn-journal-book-card"><img src="../assets/journal-open-book.png" alt=""><span>Thalgrimm Sangue de Ferro</span></button>
+      </div>
+    </main>
+    <footer class="cn-footer"><div class="cn-footer-status"></div><div class="cn-gm-controls"><button class="cn-button cn-button-secondary"><i class="fa-solid fa-users-viewfinder"></i><span>Abrir para todos</span></button><button class="cn-button cn-button-primary"><i class="fa-solid fa-play"></i><span>Iniciar o jogo</span></button></div></footer>
+  </div>
+</body>
+</html>

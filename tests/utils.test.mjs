@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  characterVisibleToUser,
   mediaType,
   normalizeCharacterEntry,
   normalizeConfig,
@@ -30,7 +31,9 @@ test("configuration clamps visual and audio values", () => {
     backdropDarkness: -3,
     transitionDuration: 9000,
     accentColor: "red",
-    textColor: "#123456"
+    textColor: "#123456",
+    barColor: "invalid",
+    showBars: false
   });
 
   assert.equal(config.musicVolume, 1);
@@ -38,6 +41,8 @@ test("configuration clamps visual and audio values", () => {
   assert.equal(config.transitionDuration, 2000);
   assert.equal(config.accentColor, "#d7a642");
   assert.equal(config.textColor, "#123456");
+  assert.equal(config.barColor, "#020307");
+  assert.equal(config.showBars, false);
 });
 
 test("configuration preserves unfinished player-map rows while editing", () => {
@@ -71,6 +76,14 @@ test("configuration keeps one curated entry per actor", () => {
 
   assert.equal(config.characterEntries.length, 1);
   assert.deepEqual(config.characterEntries[0].userIds, ["player-a"]);
+});
+
+test("character visibility uses Nexus links and never actor permissions", () => {
+  const entry = normalizeCharacterEntry({ actorUuid: "Actor.hero", userIds: ["player-a"] });
+
+  assert.equal(characterVisibleToUser(entry, { id: "player-a", isGM: false }), true);
+  assert.equal(characterVisibleToUser(entry, { id: "player-b", isGM: false }), false);
+  assert.equal(characterVisibleToUser(entry, { id: "gm", isGM: true }), true);
 });
 
 test("media types recognize supported videos", () => {

@@ -19,7 +19,9 @@
     <div class="cn-config-grid three-columns">
       <label><span>{{localize "CampaignNexus.Config.AccentColor"}}</span><input type="color" data-field="accentColor" value="{{config.accentColor}}"></label>
       <label><span>{{localize "CampaignNexus.Config.TextColor"}}</span><input type="color" data-field="textColor" value="{{config.textColor}}"></label>
+      <label><span>{{localize "CampaignNexus.Config.BarColor"}}</span><input type="color" data-field="barColor" value="{{config.barColor}}"></label>
       <label><span>{{localize "CampaignNexus.Config.Transition"}}</span><input type="number" min="0" max="2000" step="50" data-field="transitionDuration" value="{{config.transitionDuration}}"></label>
+      <label class="cn-checkbox-row wide"><input type="checkbox" data-field="showBars" {{checked config.showBars}}><span><strong>{{localize "CampaignNexus.Config.ShowBars"}}</strong><small>{{localize "CampaignNexus.Config.ShowBarsHint"}}</small></span></label>
       <label class="wide"><span>{{localize "CampaignNexus.Config.Darkness"}}: <output data-output="darkness">{{darknessPercent}}%</output></span><input type="range" min="0" max="0.9" step="0.01" data-field="backdropDarkness" data-output="darkness" value="{{config.backdropDarkness}}"></label>
     </div>
   </section>

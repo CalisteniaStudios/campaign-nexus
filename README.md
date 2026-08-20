@@ -12,10 +12,10 @@ https://raw.githubusercontent.com/CalisteniaStudios/campaign-nexus/main/module.j
 
 ## Features
 
-- Full-screen campaign menu with configurable branding, colors, image/video backgrounds, music, section order, and section visibility.
+- Full-screen campaign menu with configurable branding, colors, optional colored/transparent interface bars, image/video backgrounds, music, section order, and section visibility.
 - GM map library using all Foundry scenes, with search, preview, and activation controls.
 - Curated player map gallery that never exposes the GM's scene list.
-- GM-curated character galleries with custom artwork, player assignments, Actor-sheet access, and Foundry permission checks.
+- GM-curated character galleries with custom artwork and player assignments. Portrait visibility is controlled by Campaign Nexus; Foundry remains responsible for allowing or denying Actor-sheet access.
 - Large illustrated journal books using the included open-book artwork, plus permission-aware Journals and Compendiums.
 - Curated Quests and Systems/Reference sections using Journal entries selected by the GM.
 - Styled in-menu chat with recent visible messages.

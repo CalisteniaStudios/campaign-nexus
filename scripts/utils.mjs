@@ -101,6 +101,8 @@ export function normalizeConfig(value = {}) {
     musicVolume: clamp(value.musicVolume, 0, 1, DEFAULT_CONFIG.musicVolume),
     accentColor: normalizeColor(value.accentColor, DEFAULT_CONFIG.accentColor),
     textColor: normalizeColor(value.textColor, DEFAULT_CONFIG.textColor),
+    barColor: normalizeColor(value.barColor, DEFAULT_CONFIG.barColor),
+    showBars: value.showBars !== false,
     backdropDarkness: clamp(value.backdropDarkness, 0, 0.9, DEFAULT_CONFIG.backdropDarkness),
     transitionDuration: Math.round(clamp(value.transitionDuration, 0, 2000, DEFAULT_CONFIG.transitionDuration)),
     lockPlayers: value.lockPlayers !== false,
@@ -170,6 +172,12 @@ export function canObserve(document, user = globalThis.game?.user) {
     return document.testUserPermission(user, "OBSERVER");
   }
   return Boolean(document.isOwner);
+}
+
+export function characterVisibleToUser(entry, user = globalThis.game?.user) {
+  if (!entry || !user) return false;
+  if (user.isGM) return true;
+  return Array.isArray(entry.userIds) && entry.userIds.includes(user.id);
 }
 
 export function rootElement(value) {

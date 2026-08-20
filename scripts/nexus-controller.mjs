@@ -6,6 +6,7 @@ import {
 } from "./constants.mjs";
 import {
   canObserve,
+  characterVisibleToUser,
   documentImage,
   escapeHtml,
   format,
@@ -62,7 +63,7 @@ export class CampaignNexusController {
     this.locked = false;
     this.audio = null;
     this.lightbox = null;
-    this.characterUserId = "";
+    this.characterUserId = "__all__";
     this.foundrySettingsActions = [];
     this.boundKeydown = this.#onKeydown.bind(this);
   }
@@ -270,30 +271,34 @@ export class CampaignNexusController {
   }
 
   async #charactersHtml() {
-    const players = (game.users?.contents ?? []).filter((user) => !user.isGM);
+    const users = game.users?.contents ?? [];
     const targetUser = game.user.isGM
-      ? (players.find((user) => user.id === this.characterUserId) ?? players[0] ?? game.user)
+      ? users.find((user) => user.id === this.characterUserId) ?? null
       : game.user;
-    this.characterUserId = targetUser?.id ?? "";
+    this.characterUserId = game.user.isGM ? (targetUser?.id ?? "__all__") : (targetUser?.id ?? "");
 
     const configured = await Promise.all(this.config.characterEntries.map(async (entry) => ({
       entry,
       actor: await globalThis.fromUuid?.(entry.actorUuid)
     })));
-    const actors = configured.filter(({ entry, actor }) => (
-      actor
-      && entry.userIds.includes(targetUser.id)
-      && canObserve(actor, targetUser)
-    ));
+    const actors = configured.filter(({ entry, actor }) => {
+      if (!actor) return false;
+      if (game.user.isGM) return !targetUser || entry.userIds.includes(targetUser.id);
+      return characterVisibleToUser(entry, targetUser);
+    });
     const cards = actors.map(({ entry, actor }, index) => `
-      <button type="button" class="cn-character-card" style="--cn-card-index:${index}" data-searchable="${escapeHtml(actor.name.toLowerCase())}" data-cn-action="open-document" data-uuid="${escapeHtml(actor.uuid)}">
+      <button type="button" class="cn-character-card" style="--cn-card-index:${index}" data-searchable="${escapeHtml(actor.name.toLowerCase())}" data-cn-action="open-character" data-uuid="${escapeHtml(actor.uuid)}">
         <span class="cn-character-art"><img src="${escapeHtml(entry.imageSrc || documentImage(actor))}" alt=""></span>
         <span class="cn-character-gradient"></span>
         <span class="cn-character-copy"><strong>${escapeHtml(actor.name)}</strong><small>${escapeHtml(actor.type ?? "")}</small></span>
       </button>`).join("");
-    const selector = game.user.isGM && players.length
-      ? `<div class="cn-player-selector" aria-label="${escapeHtml(localize("CampaignNexus.Characters.SelectPlayer", "Select player"))}">${players.map((user) => `
-          <button type="button" class="${user.id === targetUser.id ? "is-active" : ""}" data-cn-action="select-character-user" data-user-id="${escapeHtml(user.id)}">
+    const selector = game.user.isGM
+      ? `<div class="cn-player-selector" aria-label="${escapeHtml(localize("CampaignNexus.Characters.SelectPlayer", "Select player"))}">
+          <button type="button" class="${targetUser ? "" : "is-active"}" data-cn-action="select-character-user" data-user-id="__all__">
+            <span><i class="fa-solid fa-users"></i></span><strong>${escapeHtml(localize("CampaignNexus.Characters.All", "All"))}</strong>
+          </button>
+          ${users.map((user) => `
+          <button type="button" class="${user.id === targetUser?.id ? "is-active" : ""}" data-cn-action="select-character-user" data-user-id="${escapeHtml(user.id)}">
             <span>${escapeHtml(user.name.slice(0, 1).toUpperCase())}</span><strong>${escapeHtml(user.name)}</strong>
           </button>`).join("")}</div>`
       : "";
@@ -416,8 +421,10 @@ export class CampaignNexusController {
   #applyTheme() {
     this.overlay.style.setProperty("--cn-accent", this.config.accentColor);
     this.overlay.style.setProperty("--cn-text", this.config.textColor);
+    this.overlay.style.setProperty("--cn-bar-color", this.config.barColor);
     this.overlay.style.setProperty("--cn-darkness", String(this.config.backdropDarkness));
     this.overlay.style.setProperty("--cn-transition", `${this.config.transitionDuration}ms`);
+    this.overlay.classList.toggle("bars-hidden", !this.config.showBars);
     this.overlay.classList.toggle("reduce-motion", game.settings.get(MODULE_ID, "reduceMotion"));
   }
 
@@ -467,6 +474,13 @@ export class CampaignNexusController {
     if (!document || !canObserve(document)) return;
     await document.sheet?.render(true);
     setTimeout(() => rootElement(document.sheet?.element)?.classList.add("cn-over-menu"), 50);
+  }
+
+  async #openCharacter(uuid) {
+    const actor = await globalThis.fromUuid?.(uuid);
+    if (!actor) return;
+    await actor.sheet?.render(true);
+    setTimeout(() => rootElement(actor.sheet?.element)?.classList.add("cn-over-menu"), 50);
   }
 
   async #openPack(collection) {
@@ -541,6 +555,7 @@ export class CampaignNexusController {
       await scene?.activate();
       return;
     }
+    if (action === "open-character") return this.#openCharacter(target.dataset.uuid);
     if (action === "open-document") return this.#openDocument(target.dataset.uuid);
     if (action === "open-pack") return this.#openPack(target.dataset.pack);
     if (action === "lightbox") return this.#showLightbox(target.dataset.src, target.dataset.name);

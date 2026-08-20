@@ -23,6 +23,8 @@ export const DEFAULT_CONFIG = Object.freeze({
   musicVolume: 0.2,
   accentColor: "#d7a642",
   textColor: "#ffffff",
+  barColor: "#020307",
+  showBars: true,
   backdropDarkness: 0.46,
   transitionDuration: 500,
   lockPlayers: true,
