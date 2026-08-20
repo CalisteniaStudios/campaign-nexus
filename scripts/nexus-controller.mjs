@@ -1,12 +1,10 @@
 import {
   MODULE_ID,
-  MODULE_PATH,
   SOCKET_NAME,
   STYLISH_SHOP_IDS
 } from "./constants.mjs";
 import {
   canObserve,
-  characterVisibleToUser,
   documentImage,
   escapeHtml,
   format,
@@ -63,7 +61,7 @@ export class CampaignNexusController {
     this.locked = false;
     this.audio = null;
     this.lightbox = null;
-    this.characterUserId = "__all__";
+    this.characterUserId = "";
     this.foundrySettingsActions = [];
     this.boundKeydown = this.#onKeydown.bind(this);
   }
@@ -199,13 +197,16 @@ export class CampaignNexusController {
     if (!state.open && this.isOpen && !this.previewMode) await this.close({ force: true });
   }
 
-  async renderCurrentSection() {
+  async renderCurrentSection({ characterTransition = null } = {}) {
     if (!this.overlay) return;
     const content = this.overlay.querySelector(".cn-content");
     content.classList.add("is-changing");
     const html = await this.#sectionHtml(this.currentSection);
     content.innerHTML = html;
-    requestAnimationFrame(() => content.classList.remove("is-changing"));
+    requestAnimationFrame(() => {
+      content.classList.remove("is-changing");
+      if (characterTransition) this.#animateCharacterTransition(content, characterTransition);
+    });
     this.#updateBackground();
     this.#renderNavigation();
   }
@@ -271,46 +272,84 @@ export class CampaignNexusController {
   }
 
   async #charactersHtml() {
-    const users = game.users?.contents ?? [];
-    const targetUser = game.user.isGM
-      ? users.find((user) => user.id === this.characterUserId) ?? null
-      : game.user;
-    this.characterUserId = game.user.isGM ? (targetUser?.id ?? "__all__") : (targetUser?.id ?? "");
+    const users = new Map((game.users?.contents ?? []).map((user) => [user.id, user]));
+    const configured = await Promise.all(this.config.characterEntries.map(async (entry) => {
+      try {
+        return { entry, actor: await globalThis.fromUuid?.(entry.actorUuid) };
+      } catch (_error) {
+        return { entry, actor: null };
+      }
+    }));
+    const storedProfiles = this.config.characterProfiles;
+    const profileSources = storedProfiles.length
+      ? storedProfiles.filter((profile) => profile.enabled)
+      : [...new Set(this.config.characterEntries.flatMap((entry) => entry.userIds))]
+        .map((userId) => ({ userId, enabled: true, imageSrc: "" }));
+    const profiles = profileSources
+      .map((profile, index) => {
+        const user = users.get(profile.userId);
+        if (!user) return null;
+        const linked = configured.filter(({ entry }) => entry.userIds.includes(profile.userId));
+        const fallback = linked.find(({ entry, actor }) => entry.imageSrc || entry.actorImageSrc || actor)?.entry;
+        const fallbackActor = linked.find(({ actor }) => actor)?.actor;
+        return {
+          ...profile,
+          index,
+          user,
+          linked,
+          imageSrc: profile.imageSrc
+            || user.avatar
+            || fallback?.imageSrc
+            || fallback?.actorImageSrc
+            || documentImage(fallbackActor)
+        };
+      })
+      .filter(Boolean);
+    const selectedProfile = profiles.find((profile) => profile.userId === this.characterUserId) ?? null;
 
-    const configured = await Promise.all(this.config.characterEntries.map(async (entry) => ({
-      entry,
-      actor: await globalThis.fromUuid?.(entry.actorUuid)
-    })));
-    const actors = configured.filter(({ entry, actor }) => {
-      if (!actor) return false;
-      if (game.user.isGM) return !targetUser || entry.userIds.includes(targetUser.id);
-      return characterVisibleToUser(entry, targetUser);
-    });
-    const cards = actors.map(({ entry, actor }, index) => `
-      <button type="button" class="cn-character-card" style="--cn-card-index:${index}" data-searchable="${escapeHtml(actor.name.toLowerCase())}" data-cn-action="open-character" data-uuid="${escapeHtml(actor.uuid)}">
-        <span class="cn-character-art"><img src="${escapeHtml(entry.imageSrc || documentImage(actor))}" alt=""></span>
-        <span class="cn-character-gradient"></span>
-        <span class="cn-character-copy"><strong>${escapeHtml(actor.name)}</strong><small>${escapeHtml(actor.type ?? "")}</small></span>
-      </button>`).join("");
-    const selector = game.user.isGM
-      ? `<div class="cn-player-selector" aria-label="${escapeHtml(localize("CampaignNexus.Characters.SelectPlayer", "Select player"))}">
-          <button type="button" class="${targetUser ? "" : "is-active"}" data-cn-action="select-character-user" data-user-id="__all__">
-            <span><i class="fa-solid fa-users"></i></span><strong>${escapeHtml(localize("CampaignNexus.Characters.All", "All"))}</strong>
+    if (!selectedProfile) {
+      this.characterUserId = "";
+      const profileCards = profiles.map((profile, index) => `
+        <button type="button" class="cn-character-profile-card" style="--cn-card-index:${index}" data-cn-action="select-character-user" data-user-id="${escapeHtml(profile.userId)}" aria-label="${escapeHtml(profile.user.name)}" title="${escapeHtml(profile.user.name)}">
+          <span class="cn-character-profile-art"><img src="${escapeHtml(profile.imageSrc)}" alt=""></span>
+          <span class="cn-character-profile-shine"></span>
+        </button>`).join("");
+      return `<section class="cn-character-page"><div class="cn-character-profile-gallery">${profileCards || emptyState("fa-solid fa-user-group", localize("CampaignNexus.Empty.CharacterProfiles", "The Game Master has not configured any player portraits yet."))}</div></section>`;
+    }
+
+    const cards = selectedProfile.linked.map(({ entry, actor }, index) => {
+      const name = actor?.name || entry.actorName || localize("CampaignNexus.Characters.Unknown", "Unknown character");
+      const image = entry.imageSrc || entry.actorImageSrc || documentImage(actor);
+      return `
+        <button type="button" class="cn-character-card" style="--cn-card-index:${index}" data-cn-action="open-character" data-uuid="${escapeHtml(entry.actorUuid)}">
+          <span class="cn-character-art"><img src="${escapeHtml(image)}" alt=""></span>
+          <span class="cn-character-gradient"></span>
+          <span class="cn-character-copy"><strong>${escapeHtml(name)}</strong><small>${escapeHtml(localize("CampaignNexus.Characters.TypeLabel", "CHARACTER"))}</small></span>
+        </button>`;
+    }).join("");
+
+    return `
+      <section class="cn-character-page is-detail">
+        <div class="cn-character-detail">
+          <button type="button" class="cn-character-feature" data-cn-action="deselect-character-user" data-user-id="${escapeHtml(selectedProfile.userId)}" aria-label="${escapeHtml(localize("CampaignNexus.Characters.Back", "Back to players"))}">
+            <span class="cn-character-profile-art"><img src="${escapeHtml(selectedProfile.imageSrc)}" alt=""></span>
+            <span class="cn-character-feature-shade"></span>
+            <span class="cn-character-return-hint"><i class="fa-solid fa-arrow-left"></i>${escapeHtml(localize("CampaignNexus.Characters.Back", "Back to players"))}</span>
           </button>
-          ${users.map((user) => `
-          <button type="button" class="${user.id === targetUser?.id ? "is-active" : ""}" data-cn-action="select-character-user" data-user-id="${escapeHtml(user.id)}">
-            <span>${escapeHtml(user.name.slice(0, 1).toUpperCase())}</span><strong>${escapeHtml(user.name)}</strong>
-          </button>`).join("")}</div>`
-      : "";
-    return `${this.#pageHeader("characters", actors.length)}${selector}${searchBar(localize("CampaignNexus.Search.Characters", "Search characters..."))}<div class="cn-character-gallery">${cards || emptyState("fa-solid fa-users", localize("CampaignNexus.Empty.Characters", "No configured characters are available for this player."))}</div>`;
+          <div class="cn-character-linked-column">
+            <div class="cn-character-gallery">${cards || emptyState("fa-solid fa-user-group", localize("CampaignNexus.Empty.LinkedCharacters", "No characters are linked to this player."))}</div>
+          </div>
+        </div>
+      </section>`;
   }
 
   #journalsHtml() {
     const journals = (game.journal?.contents ?? []).filter((journal) => canObserve(journal));
     const cards = journals.map((journal, index) => `
       <button type="button" class="cn-journal-book-card" style="--cn-card-index:${index}" data-searchable="${escapeHtml(journal.name.toLowerCase())}" data-cn-action="open-document" data-uuid="${escapeHtml(journal.uuid)}">
-        <img src="${MODULE_PATH}/assets/journal-open-book.png" alt="">
-        <span>${escapeHtml(journal.name)}</span>
+        <span class="cn-journal-cover" aria-hidden="true"></span>
+        <span class="cn-journal-pages" aria-hidden="true"><span class="cn-journal-spine"></span></span>
+        <span class="cn-journal-title"><span>${escapeHtml(journal.name)}</span><i aria-hidden="true"></i></span>
       </button>`).join("");
     return `${this.#pageHeader("journals", journals.length)}${searchBar(localize("CampaignNexus.Search.Journals", "Search journals..."))}<div class="cn-journal-grid">${cards || emptyState("fa-solid fa-book-open", localize("CampaignNexus.Empty.Journals", "No accessible journals found."))}</div>`;
   }
@@ -521,6 +560,7 @@ export class CampaignNexusController {
     }
     if (action === "navigate") {
       this.currentSection = target.dataset.section;
+      if (this.currentSection === "characters") this.characterUserId = "";
       if (this.currentSection === "shops" && !STYLISH_SHOP_IDS.some((id) => game.modules?.get(id)?.active)) {
         ui.notifications?.warn(localize("CampaignNexus.Shops.RequiredDetail", "Install and activate Stylish Shop to use this section."));
       }
@@ -529,7 +569,24 @@ export class CampaignNexusController {
     if (action === "configure") return globalThis.CampaignNexus?.openConfiguration?.();
     if (action === "select-character-user") {
       this.characterUserId = target.dataset.userId;
-      return this.renderCurrentSection();
+      return this.renderCurrentSection({
+        characterTransition: {
+          originRect: target.getBoundingClientRect(),
+          targetSelector: ".cn-character-feature",
+          userId: this.characterUserId
+        }
+      });
+    }
+    if (action === "deselect-character-user") {
+      const userId = target.dataset.userId;
+      this.characterUserId = "";
+      return this.renderCurrentSection({
+        characterTransition: {
+          originRect: target.getBoundingClientRect(),
+          targetSelector: ".cn-character-profile-card",
+          userId
+        }
+      });
     }
     if (action === "foundry-setting") {
       const source = this.foundrySettingsActions[Number(target.dataset.index)];
@@ -599,10 +656,40 @@ export class CampaignNexusController {
       this.#closeLightbox();
       return;
     }
+    if (this.currentSection === "characters" && this.characterUserId) {
+      event.preventDefault();
+      this.characterUserId = "";
+      this.renderCurrentSection();
+      return;
+    }
     if (!this.locked || game.user.isGM || this.previewMode) {
       event.preventDefault();
       this.close();
     }
+  }
+
+  #animateCharacterTransition(content, { originRect, targetSelector, userId }) {
+    if (this.overlay.classList.contains("reduce-motion")) return;
+    const destination = [...content.querySelectorAll(targetSelector)]
+      .find((element) => element.dataset.userId === userId);
+    if (!destination || !originRect || typeof destination.animate !== "function") return;
+    const targetRect = destination.getBoundingClientRect();
+    if (!targetRect.width || !targetRect.height) return;
+    const deltaX = originRect.left - targetRect.left;
+    const deltaY = originRect.top - targetRect.top;
+    const scaleX = originRect.width / targetRect.width;
+    const scaleY = originRect.height / targetRect.height;
+    destination.animate([
+      {
+        transformOrigin: "top left",
+        transform: `translate(${deltaX}px, ${deltaY}px) scale(${scaleX}, ${scaleY})`,
+        opacity: 0.75
+      },
+      { transformOrigin: "top left", transform: "translate(0, 0) scale(1)", opacity: 1 }
+    ], {
+      duration: Math.max(260, this.config.transitionDuration),
+      easing: "cubic-bezier(.2,.78,.22,1)"
+    });
   }
 
   #raiseFoundryWindows() {

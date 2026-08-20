@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
-  characterVisibleToUser,
   mediaType,
   normalizeCharacterEntry,
+  normalizeCharacterProfile,
   normalizeConfig,
   normalizeLobbyState,
   normalizeSections
@@ -54,12 +54,18 @@ test("configuration preserves unfinished player-map rows while editing", () => {
 test("character entries keep their custom art and unique player links", () => {
   const entry = normalizeCharacterEntry({
     actorUuid: "Actor.hero",
+    actorName: "Hero",
+    actorType: "character",
+    actorImageSrc: "actors/hero.webp",
     imageSrc: "characters/hero.webp",
     userIds: ["player-a", "player-a", "player-b", ""]
   });
 
   assert.deepEqual(entry, {
     actorUuid: "Actor.hero",
+    actorName: "Hero",
+    actorType: "character",
+    actorImageSrc: "actors/hero.webp",
     imageSrc: "characters/hero.webp",
     userIds: ["player-a", "player-b"]
   });
@@ -78,12 +84,21 @@ test("configuration keeps one curated entry per actor", () => {
   assert.deepEqual(config.characterEntries[0].userIds, ["player-a"]);
 });
 
-test("character visibility uses Nexus links and never actor permissions", () => {
-  const entry = normalizeCharacterEntry({ actorUuid: "Actor.hero", userIds: ["player-a"] });
+test("configuration keeps one presentation profile per player", () => {
+  const profile = normalizeCharacterProfile({ userId: "player-a", imageSrc: "players/a.webp" });
+  const config = normalizeConfig({
+    characterProfiles: [profile, { userId: "player-a", imageSrc: "duplicate.webp" }, { userId: "" }]
+  });
 
-  assert.equal(characterVisibleToUser(entry, { id: "player-a", isGM: false }), true);
-  assert.equal(characterVisibleToUser(entry, { id: "player-b", isGM: false }), false);
-  assert.equal(characterVisibleToUser(entry, { id: "gm", isGM: true }), true);
+  assert.deepEqual(config.characterProfiles, [{ userId: "player-a", enabled: true, imageSrc: "players/a.webp" }]);
+});
+
+test("disabled player profiles remain explicit after saving", () => {
+  const config = normalizeConfig({
+    characterProfiles: [{ userId: "player-a", enabled: false, imageSrc: "players/a.webp" }]
+  });
+
+  assert.deepEqual(config.characterProfiles, [{ userId: "player-a", enabled: false, imageSrc: "players/a.webp" }]);
 });
 
 test("media types recognize supported videos", () => {

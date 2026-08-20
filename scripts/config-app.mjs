@@ -9,6 +9,7 @@ import {
   clone,
   localize,
   normalizeCharacterEntry,
+  normalizeCharacterProfile,
   normalizeConfig,
   normalizePlayerMap,
   openFilePicker,
@@ -44,8 +45,18 @@ function readDraft(app) {
     .filter((row) => row.querySelector('[data-character-field="enabled"]')?.checked)
     .map((row) => normalizeCharacterEntry({
       actorUuid: row.dataset.characterUuid,
+      actorName: row.dataset.characterName,
+      actorType: row.dataset.characterType,
+      actorImageSrc: row.dataset.characterImage,
       imageSrc: row.querySelector('[data-character-field="imageSrc"]')?.value ?? "",
       userIds: [...row.querySelectorAll('[data-character-users] input:checked')].map((input) => input.value)
+    }));
+
+  const characterProfiles = [...root.querySelectorAll("[data-character-profile-user-id]")]
+    .map((row) => normalizeCharacterProfile({
+      userId: row.dataset.characterProfileUserId,
+      enabled: row.querySelector('[data-character-profile-field="enabled"]')?.checked,
+      imageSrc: row.querySelector('[data-character-profile-field="imageSrc"]')?.value ?? ""
     }));
 
   app.draft = normalizeConfig({
@@ -65,6 +76,7 @@ function readDraft(app) {
     startSceneId: field(root, "startSceneId")?.value,
     sections,
     playerMaps,
+    characterProfiles,
     characterEntries,
     shopActorUuids: [...root.querySelectorAll('[data-collection="shops"] input:checked')].map((input) => input.value),
     questJournalUuids: [...root.querySelectorAll('[data-collection="quests"] input:checked')].map((input) => input.value),
@@ -153,6 +165,18 @@ async function onBrowseCharacter(_event, target) {
   });
 }
 
+async function onBrowseCharacterProfile(_event, target) {
+  const userId = target.dataset.userId;
+  browsePath(this, target, "image", (path) => {
+    let entry = this.draft.characterProfiles.find((candidate) => candidate.userId === userId);
+    if (!entry) {
+      entry = normalizeCharacterProfile({ userId });
+      this.draft.characterProfiles.push(entry);
+    }
+    entry.imageSrc = path;
+  });
+}
+
 async function onPreview() {
   readDraft(this);
   await globalThis.CampaignNexus?.preview?.(this.draft);
@@ -198,6 +222,7 @@ export function createConfigApplicationClass() {
         browseGlobal: onBrowseGlobal,
         browseSection: onBrowseSection,
         browseMap: onBrowseMap,
+        browseCharacterProfile: onBrowseCharacterProfile,
         browseCharacter: onBrowseCharacter,
         preview: onPreview,
         reset: onReset
@@ -218,6 +243,9 @@ export function createConfigApplicationClass() {
       const context = await super._prepareContext(options);
       const selectedShops = new Set(this.draft.shopActorUuids);
       const configuredCharacters = new Map(this.draft.characterEntries.map((entry) => [entry.actorUuid, entry]));
+      const configuredProfiles = new Map(this.draft.characterProfiles.map((entry) => [entry.userId, entry]));
+      const inferredProfileIds = new Set(this.draft.characterEntries.flatMap((entry) => entry.userIds));
+      const shouldInferProfiles = this.draft.characterProfiles.length === 0;
       const selectedQuests = new Set(this.draft.questJournalUuids);
       const selectedSystems = new Set(this.draft.systemJournalUuids);
 
@@ -238,19 +266,32 @@ export function createConfigApplicationClass() {
         last: index === items.length - 1
       }));
 
-      const users = (game.users?.contents ?? [])
-        .map((user) => ({
+      const rawUsers = game.users?.contents ?? [];
+      const users = rawUsers.map((user) => ({
           id: user.id,
           name: user.isGM
             ? `${user.name} (${localize("CampaignNexus.Characters.Gamemaster", "GM")})`
             : user.name
         }));
+      const characterProfiles = rawUsers.map((user) => {
+        const profile = configuredProfiles.get(user.id);
+        return {
+          id: user.id,
+          name: user.isGM
+            ? `${user.name} (${localize("CampaignNexus.Characters.Gamemaster", "GM")})`
+            : user.name,
+          selected: profile ? profile.enabled : shouldInferProfiles && inferredProfileIds.has(user.id),
+          imageSrc: profile?.imageSrc ?? "",
+          previewSrc: profile?.imageSrc || user.avatar || "icons/svg/mystery-man.svg"
+        };
+      });
       const actors = (game.actors?.contents ?? []).map((actor) => {
         const character = configuredCharacters.get(actor.uuid);
         const selectedUsers = new Set(character?.userIds ?? []);
         return {
           uuid: actor.uuid,
           name: actor.name,
+          type: actor.type ?? "",
           img: actor.img,
           selected: selectedShops.has(actor.uuid),
           characterSelected: Boolean(character),
@@ -273,6 +314,7 @@ export function createConfigApplicationClass() {
         config: this.draft,
         sections,
         playerMaps,
+        characterProfiles,
         actors,
         journals,
         scenes: scenes.map((scene) => ({ ...scene, selected: scene.id === this.draft.startSceneId })),

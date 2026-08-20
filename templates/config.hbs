@@ -68,9 +68,20 @@
   <section class="cn-config-section">
     <h2><i class="fa-solid fa-users"></i> {{localize "CampaignNexus.Config.Characters"}}</h2>
     <p class="cn-config-hint">{{localize "CampaignNexus.Config.CharactersHint"}}</p>
+    <h3 class="cn-config-subheading">{{localize "CampaignNexus.Config.CharacterProfiles"}}</h3>
+    <p class="cn-config-hint">{{localize "CampaignNexus.Config.CharacterProfilesHint"}}</p>
+    <div class="cn-character-profile-config-list">
+      {{#each characterProfiles}}
+      <article class="cn-character-profile-config-row" data-character-profile-user-id="{{id}}">
+        <label class="cn-character-toggle"><input type="checkbox" data-character-profile-field="enabled" {{checked selected}}><img src="{{previewSrc}}" alt=""><strong>{{name}}</strong></label>
+        <label class="cn-character-image"><span>{{localize "CampaignNexus.Config.CharacterProfileImage"}}</span><div class="cn-inline-path"><input type="text" data-character-profile-field="imageSrc" value="{{imageSrc}}" placeholder="{{localize "CampaignNexus.Config.CharacterProfileFallback"}}"><button type="button" data-action="browseCharacterProfile" data-user-id="{{id}}" data-current="{{imageSrc}}"><i class="fa-solid fa-folder-open"></i></button></div></label>
+      </article>
+      {{else}}<p class="cn-config-empty">{{localize "CampaignNexus.Config.NoPlayers"}}</p>{{/each}}
+    </div>
+    <h3 class="cn-config-subheading">{{localize "CampaignNexus.Config.LinkedCharacters"}}</h3>
     <div class="cn-character-config-list">
       {{#each actors}}
-      <article class="cn-character-config-row" data-character-uuid="{{uuid}}">
+      <article class="cn-character-config-row" data-character-uuid="{{uuid}}" data-character-name="{{name}}" data-character-type="{{type}}" data-character-image="{{img}}">
         <label class="cn-character-toggle"><input type="checkbox" data-character-field="enabled" {{checked characterSelected}}><img src="{{img}}" alt=""><strong>{{name}}</strong></label>
         <label class="cn-character-image"><span>{{localize "CampaignNexus.Config.CharacterImage"}}</span><div class="cn-inline-path"><input type="text" data-character-field="imageSrc" value="{{characterImageSrc}}" placeholder="{{localize "CampaignNexus.Config.ActorImageFallback"}}"><button type="button" data-action="browseCharacter" data-uuid="{{uuid}}" data-current="{{characterImageSrc}}"><i class="fa-solid fa-folder-open"></i></button></div></label>
         <fieldset class="cn-character-users" data-character-users>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Campaign Nexus — Personagens</title>
+  <link rel="stylesheet" href="../styles/campaign-nexus.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <style>
+    body { margin: 0; background: #080a10; }
+    .cn-overlay { --cn-accent: #d7a642; --cn-text: #fff; --cn-bar-color: #020307; --cn-darkness: .46; --cn-transition: 1ms; }
+    .cn-background { background: radial-gradient(circle at 25% 20%, #645225, #142226 72%) !important; }
+    .portrait-ana { background: radial-gradient(circle at 50% 24%, #f4d8c0 0 7%, transparent 8%), radial-gradient(ellipse at 50% 37%, #eee 0 17%, transparent 18%), linear-gradient(145deg,#3b1623,#b06d57 48%,#160f19); }
+    .portrait-paulo { background: radial-gradient(circle at 50% 24%, #b56f43 0 7%, transparent 8%), radial-gradient(ellipse at 50% 37%, #5e2a20 0 17%, transparent 18%), linear-gradient(145deg,#28150f,#8d3d25 48%,#090b0f); }
+    .portrait-miraion { background: radial-gradient(circle at 50% 24%, #c59d7c 0 7%, transparent 8%), radial-gradient(ellipse at 50% 37%, #171822 0 17%, transparent 18%), linear-gradient(145deg,#11131a,#525464 48%,#050609); }
+    .portrait-katimus { background: radial-gradient(circle at 50% 24%, #9d7a62 0 7%, transparent 8%), radial-gradient(ellipse at 50% 37%, #32241c 0 17%, transparent 18%), linear-gradient(145deg,#1d1614,#695143 48%,#060606); }
+    .preview-art { display:block; position:absolute; inset:0; background-size:cover; }
+    .cn-character-page[hidden] { display: none !important; }
+  </style>
+</head>
+<body class="campaign-nexus-active">
+  <div class="cn-overlay is-visible is-gm" aria-hidden="false">
+    <div class="cn-background" aria-hidden="true"></div><div class="cn-shade" aria-hidden="true"></div>
+    <header class="cn-header">
+      <button class="cn-brand"><span class="cn-logo-slot"><i class="fa-solid fa-compass"></i></span><span class="cn-brand-copy"><strong>Fulgor dos Deuses</strong><small>A Cripta de Keenn</small></span></button>
+      <div class="cn-header-actions"><button class="cn-icon-button"><i class="fa-solid fa-gear"></i></button><button class="cn-icon-button"><i class="fa-solid fa-xmark"></i></button></div>
+    </header>
+    <nav class="cn-navigation"><button><i class="fa-solid fa-map"></i><span>Mapas</span></button><button class="is-active"><i class="fa-solid fa-users"></i><span>Personagens</span></button><button><i class="fa-solid fa-book-open"></i><span>Diários</span></button><button><i class="fa-solid fa-box-archive"></i><span>Compêndios</span></button><button><i class="fa-solid fa-comments"></i><span>Chat</span></button></nav>
+    <main class="cn-content">
+      <section class="cn-character-page" id="gallery-view">
+        <div class="cn-character-profile-gallery">
+          <button class="cn-character-profile-card" style="--cn-card-index:0" data-profile="ana"><span class="cn-character-profile-art"><span class="preview-art portrait-ana"></span></span><span class="cn-character-profile-shine"></span></button>
+          <button class="cn-character-profile-card" style="--cn-card-index:1" data-profile="paulo"><span class="cn-character-profile-art"><span class="preview-art portrait-paulo"></span></span><span class="cn-character-profile-shine"></span></button>
+          <button class="cn-character-profile-card" style="--cn-card-index:2" data-profile="miraion"><span class="cn-character-profile-art"><span class="preview-art portrait-miraion"></span></span><span class="cn-character-profile-shine"></span></button>
+          <button class="cn-character-profile-card" style="--cn-card-index:3" data-profile="katimus"><span class="cn-character-profile-art"><span class="preview-art portrait-katimus"></span></span><span class="cn-character-profile-shine"></span></button>
+        </div>
+      </section>
+      <section class="cn-character-page is-detail" id="detail-view" hidden>
+        <div class="cn-character-detail">
+          <button class="cn-character-feature" id="back-to-gallery"><span class="cn-character-profile-art"><span class="preview-art portrait-ana"></span></span><span class="cn-character-feature-shade"></span><span class="cn-character-return-hint"><i class="fa-solid fa-arrow-left"></i>Voltar aos jogadores</span></button>
+          <div class="cn-character-linked-column"><div class="cn-character-gallery">
+            <button class="cn-character-card" style="--cn-card-index:0"><span class="cn-character-art"><span class="preview-art portrait-ana"></span></span><span class="cn-character-gradient"></span><span class="cn-character-copy"><strong>Duelista</strong><small>CHARACTER</small></span></button>
+            <button class="cn-character-card" style="--cn-card-index:1"><span class="cn-character-art"><span class="preview-art portrait-paulo"></span></span><span class="cn-character-gradient"></span><span class="cn-character-copy"><strong>Thalgrimm Sangue de Ferro</strong><small>CHARACTER</small></span></button>
+            <button class="cn-character-card" style="--cn-card-index:2"><span class="cn-character-art"><span class="preview-art portrait-miraion"></span></span><span class="cn-character-gradient"></span><span class="cn-character-copy"><strong>Divindade menor</strong><small>CHARACTER</small></span></button>
+          </div></div>
+        </div>
+      </section>
+    </main>
+    <footer class="cn-footer"><div class="cn-footer-status"></div><div class="cn-gm-controls"><button class="cn-button cn-button-secondary"><i class="fa-solid fa-users-viewfinder"></i><span>Abrir para todos</span></button><button class="cn-button cn-button-primary"><i class="fa-solid fa-play"></i><span>Iniciar o jogo</span></button></div></footer>
+  </div>
+  <script>
+    const gallery = document.querySelector("#gallery-view");
+    const detail = document.querySelector("#detail-view");
+    gallery.addEventListener("click", (event) => {
+      if (!event.target.closest("[data-profile]")) return;
+      gallery.hidden = true;
+      detail.hidden = false;
+    });
+    document.querySelector("#back-to-gallery").addEventListener("click", () => {
+      detail.hidden = true;
+      gallery.hidden = false;
+    });
+  </script>
+</body>
+</html>

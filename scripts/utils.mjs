@@ -51,8 +51,19 @@ export function normalizePlayerMap(value = {}) {
 export function normalizeCharacterEntry(value = {}) {
   return {
     actorUuid: String(value.actorUuid ?? "").trim(),
+    actorName: String(value.actorName ?? "").trim(),
+    actorType: String(value.actorType ?? "").trim(),
+    actorImageSrc: normalizePath(value.actorImageSrc),
     imageSrc: normalizePath(value.imageSrc),
     userIds: normalizeUuidList(value.userIds)
+  };
+}
+
+export function normalizeCharacterProfile(value = {}) {
+  return {
+    userId: String(value.userId ?? "").trim(),
+    enabled: value.enabled !== false,
+    imageSrc: normalizePath(value.imageSrc)
   };
 }
 
@@ -110,6 +121,11 @@ export function normalizeConfig(value = {}) {
     sections: normalizeSections(value.sections),
     playerMaps: Array.isArray(value.playerMaps)
       ? value.playerMaps.map(normalizePlayerMap)
+      : [],
+    characterProfiles: Array.isArray(value.characterProfiles)
+      ? value.characterProfiles
+        .map(normalizeCharacterProfile)
+        .filter((entry, index, entries) => entry.userId && entries.findIndex((candidate) => candidate.userId === entry.userId) === index)
       : [],
     characterEntries: Array.isArray(value.characterEntries)
       ? value.characterEntries
@@ -172,12 +188,6 @@ export function canObserve(document, user = globalThis.game?.user) {
     return document.testUserPermission(user, "OBSERVER");
   }
   return Boolean(document.isOwner);
-}
-
-export function characterVisibleToUser(entry, user = globalThis.game?.user) {
-  if (!entry || !user) return false;
-  if (user.isGM) return true;
-  return Array.isArray(entry.userIds) && entry.userIds.includes(user.id);
 }
 
 export function rootElement(value) {

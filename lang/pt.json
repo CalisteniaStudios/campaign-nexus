@@ -16,8 +16,11 @@
     },
     "Characters": {
       "All": "Todos",
+      "Back": "Voltar aos jogadores",
       "Gamemaster": "Mestre",
-      "SelectPlayer": "Selecionar jogador"
+      "SelectPlayer": "Selecionar jogador",
+      "TypeLabel": "CHARACTER",
+      "Unknown": "Personagem desconhecida"
     },
     "Config": {
       "AccentColor": "Cor de destaque",
@@ -28,8 +31,13 @@
       "CampaignTitle": "Título da campanha",
       "CharacterImage": "Imagem cinematográfica",
       "CharacterPlayers": "Jogadores associados",
+      "CharacterProfileFallback": "Usar avatar ou personagem associada",
+      "CharacterProfileImage": "Imagem de apresentação do jogador",
+      "CharacterProfiles": "Galeria de jogadores",
+      "CharacterProfilesHint": "Escolha quais jogadores aparecem na galeria inicial e defina a imagem grande de apresentação de cada um.",
       "Characters": "Personagens do Campaign Nexus",
-      "CharactersHint": "Escolha quais personagens aparecem, defina uma imagem opcional e associe cada uma aos jogadores que a poderão ver. O retrato permanece visível; o Foundry decide se a ficha pode ser aberta.",
+      "CharactersHint": "Monte a galeria de jogadores e associe cada personagem aos perfis em que deve aparecer. Todos veem os retratos configurados; o Foundry decide se a ficha pode ser aberta.",
+      "LinkedCharacters": "Personagens associadas",
       "ActorImageFallback": "Usar imagem do ator",
       "CuratedHint": "Selecione quais diários aparecem como missões e sistemas ou materiais de referência.",
       "CuratedJournals": "Missões e sistemas",
@@ -70,11 +78,13 @@
       "Transition": "Duração da transição (ms)"
     },
     "Empty": {
+      "CharacterProfiles": "O mestre ainda não configurou imagens para a galeria de jogadores.",
       "Characters": "Nenhuma personagem configurada está disponível para este jogador.",
       "Chat": "Ainda não há mensagens.",
       "Compendiums": "Nenhum compêndio acessível encontrado.",
       "Curated": "Nada foi adicionado aqui ainda.",
       "Journals": "Nenhum diário acessível encontrado.",
+      "LinkedCharacters": "Nenhuma personagem está associada a este jogador.",
       "Maps": "Nenhum mapa encontrado.",
       "PlayerMaps": "O mestre ainda não partilhou nenhum mapa.",
       "Shops": "Nenhuma loja está disponível."

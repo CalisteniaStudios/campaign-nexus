@@ -2,10 +2,10 @@
   "id": "campaign-nexus",
   "title": "Campaign Nexus",
   "description": "A cinematic, system-independent campaign menu for Foundry VTT with maps, characters, journals, shops, quests, compendiums, chat, and a synchronized lobby.",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "url": "https://github.com/CalisteniaStudios/campaign-nexus",
   "manifest": "https://raw.githubusercontent.com/CalisteniaStudios/campaign-nexus/main/module.json",
-  "download": "https://github.com/CalisteniaStudios/campaign-nexus/releases/download/v0.2.1/campaign-nexus-v0.2.1.zip",
+  "download": "https://github.com/CalisteniaStudios/campaign-nexus/releases/download/v0.2.2/campaign-nexus-v0.2.2.zip",
   "compatibility": {
     "minimum": "13",
     "verified": "14.365",

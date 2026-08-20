@@ -36,6 +36,7 @@ export const DEFAULT_CONFIG = Object.freeze({
     backgroundSrc: ""
   })),
   playerMaps: [],
+  characterProfiles: [],
   characterEntries: [],
   shopActorUuids: [],
   questJournalUuids: [],
