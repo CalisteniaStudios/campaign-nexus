@@ -8,6 +8,7 @@ import {
   documentImage,
   escapeHtml,
   format,
+  hasOwnership,
   localize,
   mediaType,
   normalizeConfig,
@@ -282,6 +283,8 @@ export class CampaignNexusController {
         return { entry, actor: null };
       }
     }));
+    const configuredByActorUuid = new Map(configured.map((item) => [item.entry.actorUuid, item.entry]));
+    const worldActors = game.actors?.contents ?? [];
     const storedProfiles = this.config.characterProfiles;
     const profileSources = storedProfiles.length
       ? storedProfiles.filter((profile) => profile.enabled)
@@ -291,14 +294,16 @@ export class CampaignNexusController {
       .map((profile, index) => {
         const user = users.get(profile.userId);
         if (!user) return null;
-        const linked = configured.filter(({ entry }) => entry.userIds.includes(profile.userId));
-        const fallback = linked.find(({ entry, actor }) => entry.imageSrc || entry.actorImageSrc || actor)?.entry;
-        const fallbackActor = linked.find(({ actor }) => actor)?.actor;
+        const characters = worldActors
+          .filter((actor) => hasOwnership(actor, user))
+          .map((actor) => ({ actor, entry: configuredByActorUuid.get(actor.uuid) }));
+        const fallback = characters.find(({ entry }) => entry?.imageSrc || entry?.actorImageSrc)?.entry;
+        const fallbackActor = characters.find(({ actor }) => actor)?.actor;
         return {
           ...profile,
           index,
           user,
-          linked,
+          characters,
           imageSrc: profile.imageSrc
             || user.avatar
             || fallback?.imageSrc
@@ -319,11 +324,11 @@ export class CampaignNexusController {
       return `<section class="cn-character-page"><div class="cn-character-profile-gallery">${profileCards || emptyState("fa-solid fa-user-group", localize("CampaignNexus.Empty.CharacterProfiles", "The Game Master has not configured any player portraits yet."))}</div></section>`;
     }
 
-    const cards = selectedProfile.linked.map(({ entry, actor }, index) => {
-      const name = actor?.name || entry.actorName || localize("CampaignNexus.Characters.Unknown", "Unknown character");
-      const image = entry.imageSrc || entry.actorImageSrc || documentImage(actor);
+    const cards = selectedProfile.characters.map(({ entry, actor }, index) => {
+      const name = actor?.name || entry?.actorName || localize("CampaignNexus.Characters.Unknown", "Unknown character");
+      const image = entry?.imageSrc || entry?.actorImageSrc || documentImage(actor);
       return `
-        <button type="button" class="cn-character-card" style="--cn-card-index:${index}" data-cn-action="open-character" data-uuid="${escapeHtml(entry.actorUuid)}">
+        <button type="button" class="cn-character-card" style="--cn-card-index:${index}" data-cn-action="open-character" data-uuid="${escapeHtml(actor?.uuid || entry?.actorUuid)}">
           <span class="cn-character-art"><img src="${escapeHtml(image)}" alt=""></span>
           <span class="cn-character-gradient"></span>
           <span class="cn-character-copy"><strong>${escapeHtml(name)}</strong><small>${escapeHtml(localize("CampaignNexus.Characters.TypeLabel", "CHARACTER"))}</small></span>

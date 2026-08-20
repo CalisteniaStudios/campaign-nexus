@@ -84,10 +84,6 @@
       <article class="cn-character-config-row" data-character-uuid="{{uuid}}" data-character-name="{{name}}" data-character-type="{{type}}" data-character-image="{{img}}">
         <label class="cn-character-toggle"><input type="checkbox" data-character-field="enabled" {{checked characterSelected}}><img src="{{img}}" alt=""><strong>{{name}}</strong></label>
         <label class="cn-character-image"><span>{{localize "CampaignNexus.Config.CharacterImage"}}</span><div class="cn-inline-path"><input type="text" data-character-field="imageSrc" value="{{characterImageSrc}}" placeholder="{{localize "CampaignNexus.Config.ActorImageFallback"}}"><button type="button" data-action="browseCharacter" data-uuid="{{uuid}}" data-current="{{characterImageSrc}}"><i class="fa-solid fa-folder-open"></i></button></div></label>
-        <fieldset class="cn-character-users" data-character-users>
-          <legend>{{localize "CampaignNexus.Config.CharacterPlayers"}}</legend>
-          {{#each characterUsers}}<label><input type="checkbox" value="{{id}}" {{checked selected}}><span>{{name}}</span></label>{{else}}<small>{{localize "CampaignNexus.Config.NoPlayers"}}</small>{{/each}}
-        </fieldset>
       </article>
       {{else}}<p class="cn-config-empty">{{localize "CampaignNexus.Config.NoActors"}}</p>{{/each}}
     </div>

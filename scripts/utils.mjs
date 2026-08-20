@@ -190,6 +190,19 @@ export function canObserve(document, user = globalThis.game?.user) {
   return Boolean(document.isOwner);
 }
 
+export function hasOwnership(document, user = globalThis.game?.user) {
+  if (!document || !user) return false;
+  if (user.isGM) return true;
+  if (typeof document.testUserPermission === "function") {
+    return document.testUserPermission(user, "OWNER");
+  }
+  const ownerLevel = globalThis.CONST?.DOCUMENT_OWNERSHIP_LEVELS?.OWNER ?? 3;
+  const ownership = document.ownership ?? document.permission ?? {};
+  const userLevel = Number(ownership[user.id] ?? ownership.default ?? 0);
+  return userLevel >= ownerLevel
+    || (user.id === globalThis.game?.user?.id && Boolean(document.isOwner));
+}
+
 export function rootElement(value) {
   if (value instanceof HTMLElement) return value;
   return value?.[0] instanceof HTMLElement ? value[0] : null;

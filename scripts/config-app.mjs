@@ -267,12 +267,6 @@ export function createConfigApplicationClass() {
       }));
 
       const rawUsers = game.users?.contents ?? [];
-      const users = rawUsers.map((user) => ({
-          id: user.id,
-          name: user.isGM
-            ? `${user.name} (${localize("CampaignNexus.Characters.Gamemaster", "GM")})`
-            : user.name
-        }));
       const characterProfiles = rawUsers.map((user) => {
         const profile = configuredProfiles.get(user.id);
         return {
@@ -287,7 +281,6 @@ export function createConfigApplicationClass() {
       });
       const actors = (game.actors?.contents ?? []).map((actor) => {
         const character = configuredCharacters.get(actor.uuid);
-        const selectedUsers = new Set(character?.userIds ?? []);
         return {
           uuid: actor.uuid,
           name: actor.name,
@@ -295,8 +288,7 @@ export function createConfigApplicationClass() {
           img: actor.img,
           selected: selectedShops.has(actor.uuid),
           characterSelected: Boolean(character),
-          characterImageSrc: character?.imageSrc ?? "",
-          characterUsers: users.map((user) => ({ ...user, selected: selectedUsers.has(user.id) }))
+          characterImageSrc: character?.imageSrc ?? ""
         };
       });
       const journals = (game.journal?.contents ?? []).map((journal) => ({

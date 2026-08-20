@@ -15,7 +15,7 @@ https://raw.githubusercontent.com/CalisteniaStudios/campaign-nexus/main/module.j
 - Full-screen campaign menu with configurable branding, colors, optional colored/transparent interface bars, image/video backgrounds, music, section order, and section visibility.
 - GM map library using all Foundry scenes, with search, preview, and activation controls.
 - Curated player map gallery that never exposes the GM's scene list.
-- Cinematic player-profile galleries curated by the GM. Selecting a portrait expands it beside the linked character cards; Foundry remains responsible for allowing or denying Actor-sheet access.
+- Cinematic player-profile galleries curated by the GM. Selecting a portrait expands it beside every Actor that player owns, fitted into the center without scrollbars; Foundry remains responsible for allowing or denying Actor-sheet access to the current viewer.
 - Large open journal books drawn entirely by the interface, with readable titles inside the pages, plus permission-aware Journals and Compendiums.
 - Curated Quests and Systems/Reference sections using Journal entries selected by the GM.
 - Styled in-menu chat with recent visible messages.
@@ -29,7 +29,7 @@ https://raw.githubusercontent.com/CalisteniaStudios/campaign-nexus/main/module.j
 
 ## Setup
 
-After enabling the module, open **Game Settings → Configure Settings → Module Settings → Campaign Nexus** or use the gear in the Campaign Nexus header. Configure the campaign appearance, select each player portrait, link characters to player profiles, and choose the sections and documents that should appear.
+After enabling the module, open **Game Settings → Configure Settings → Module Settings → Campaign Nexus** or use the gear in the Campaign Nexus header. Configure the campaign appearance, select each player portrait, optionally assign cinematic art to Actors, and choose the sections and documents that should appear. Character cards are grouped automatically from each player's Foundry ownership permissions.
 
 The GM can open the menu locally with **Shift+M**. Use **Open for Everyone** to display it to all connected players and **Start Game** to close it for everyone. If a starting Scene is configured, Start Game activates that Scene first.
 

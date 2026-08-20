@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  hasOwnership,
   mediaType,
   normalizeCharacterEntry,
   normalizeCharacterProfile,
@@ -104,6 +105,19 @@ test("disabled player profiles remain explicit after saving", () => {
 test("media types recognize supported videos", () => {
   assert.equal(mediaType("menu.webm?cache=1"), "video");
   assert.equal(mediaType("menu.png"), "image");
+});
+
+test("ownership checks the selected Foundry user at owner level", () => {
+  const user = { id: "player-a", isGM: false };
+  const document = {
+    testUserPermission(candidate, level) {
+      return candidate === user && level === "OWNER";
+    }
+  };
+
+  assert.equal(hasOwnership(document, user), true);
+  assert.equal(hasOwnership({ ownership: { "player-a": 2 } }, user), false);
+  assert.equal(hasOwnership({ ownership: { "player-a": 3 } }, user), true);
 });
 
 test("lobby state defaults safely", () => {
