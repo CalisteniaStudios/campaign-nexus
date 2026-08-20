@@ -206,8 +206,24 @@ export function openFilePicker({ type = "imagevideo", current = "", callback }) 
     return;
   }
   const picker = new Picker({ type, current, callback });
+  const elevate = () => {
+    const element = rootElement(picker.element);
+    if (!element) return false;
+    element.classList.add("cn-file-picker-over-menu");
+    return true;
+  };
+  const observer = new MutationObserver(() => {
+    if (elevate()) observer.disconnect();
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
   picker.render(true);
-  requestAnimationFrame(() => rootElement(picker.element)?.classList.add("cn-over-menu"));
+  elevate();
+  requestAnimationFrame(elevate);
+  setTimeout(() => {
+    elevate();
+    observer.disconnect();
+  }, 1000);
+  return picker;
 }
 
 export function selectedOptions(items, selectedValues) {

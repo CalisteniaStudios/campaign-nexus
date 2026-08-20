@@ -1227,6 +1227,10 @@ button.cn-library-card {
   z-index: 2147483646 !important;
 }
 
+.cn-file-picker-over-menu {
+  z-index: 2147483647 !important;
+}
+
 /* Configuration */
 .campaign-nexus-config {
   --cn-config-accent: #8f64d8;

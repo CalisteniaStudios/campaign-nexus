@@ -144,7 +144,9 @@ export class CampaignNexusController {
     document.body.classList.remove("campaign-nexus-active");
     this.#stopAudio();
     this.#closeLightbox();
-    document.querySelectorAll(".cn-over-menu").forEach((element) => element.classList.remove("cn-over-menu"));
+    document.querySelectorAll(".cn-over-menu, .cn-file-picker-over-menu").forEach((element) => {
+      element.classList.remove("cn-over-menu", "cn-file-picker-over-menu");
+    });
   }
 
   async toggle() {
