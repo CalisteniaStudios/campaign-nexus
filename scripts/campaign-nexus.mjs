@@ -1,10 +1,18 @@
 import { createConfigApplicationClass } from "./config-app.mjs";
 import { DEFAULT_CONFIG, DEFAULT_LOBBY_STATE, MODULE_ID, SOCKET_NAME } from "./constants.mjs";
 import { CampaignNexusController } from "./nexus-controller.mjs";
-import { clone, normalizeConfig, normalizeLobbyState } from "./utils.mjs";
+import { clone, normalizeConfig, normalizeLobbyState, rootElement } from "./utils.mjs";
 
 let controller;
 let ConfigApplication;
+let configurationApp;
+
+async function openConfiguration() {
+  if (!game.user.isGM || !ConfigApplication) return;
+  configurationApp ??= new ConfigApplication();
+  await configurationApp.render({ force: true });
+  requestAnimationFrame(() => rootElement(configurationApp.element)?.classList.add("cn-over-menu"));
+}
 
 Hooks.once("init", () => {
   ConfigApplication = createConfigApplicationClass();
@@ -72,10 +80,7 @@ Hooks.once("ready", async () => {
     refresh: () => controller.refresh(),
     showToAll: () => controller.showToAll(),
     startGame: () => controller.startGame(),
-    openConfiguration: () => {
-      if (!game.user.isGM) return;
-      new ConfigApplication().render({ force: true });
-    }
+    openConfiguration
   });
 
   const lobbyState = normalizeLobbyState(game.settings.get(MODULE_ID, "lobbyState"));
@@ -85,4 +90,3 @@ Hooks.once("ready", async () => {
 Hooks.on("createChatMessage", () => {
   if (controller?.isOpen && controller.currentSection === "chat") controller.renderCurrentSection();
 });
-

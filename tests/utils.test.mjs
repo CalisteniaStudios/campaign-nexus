@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   mediaType,
+  normalizeCharacterEntry,
   normalizeConfig,
   normalizeLobbyState,
   normalizeSections
@@ -45,6 +46,33 @@ test("configuration preserves unfinished player-map rows while editing", () => {
   assert.equal(config.playerMaps[0].name, "Arton");
 });
 
+test("character entries keep their custom art and unique player links", () => {
+  const entry = normalizeCharacterEntry({
+    actorUuid: "Actor.hero",
+    imageSrc: "characters/hero.webp",
+    userIds: ["player-a", "player-a", "player-b", ""]
+  });
+
+  assert.deepEqual(entry, {
+    actorUuid: "Actor.hero",
+    imageSrc: "characters/hero.webp",
+    userIds: ["player-a", "player-b"]
+  });
+});
+
+test("configuration keeps one curated entry per actor", () => {
+  const config = normalizeConfig({
+    characterEntries: [
+      { actorUuid: "Actor.hero", userIds: ["player-a"] },
+      { actorUuid: "Actor.hero", userIds: ["player-b"] },
+      { actorUuid: "" }
+    ]
+  });
+
+  assert.equal(config.characterEntries.length, 1);
+  assert.deepEqual(config.characterEntries[0].userIds, ["player-a"]);
+});
+
 test("media types recognize supported videos", () => {
   assert.equal(mediaType("menu.webm?cache=1"), "video");
   assert.equal(mediaType("menu.png"), "image");
@@ -58,4 +86,3 @@ test("lobby state defaults safely", () => {
     openedAt: 42
   });
 });
-

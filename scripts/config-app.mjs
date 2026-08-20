@@ -8,6 +8,7 @@ import {
   clamp,
   clone,
   localize,
+  normalizeCharacterEntry,
   normalizeConfig,
   normalizePlayerMap,
   openFilePicker,
@@ -39,6 +40,14 @@ function readDraft(app) {
     src: row.querySelector('[data-map-field="src"]')?.value ?? ""
   }));
 
+  const characterEntries = [...root.querySelectorAll("[data-character-uuid]")]
+    .filter((row) => row.querySelector('[data-character-field="enabled"]')?.checked)
+    .map((row) => normalizeCharacterEntry({
+      actorUuid: row.dataset.characterUuid,
+      imageSrc: row.querySelector('[data-character-field="imageSrc"]')?.value ?? "",
+      userIds: [...row.querySelectorAll('[data-character-users] input:checked')].map((input) => input.value)
+    }));
+
   app.draft = normalizeConfig({
     title: field(root, "title")?.value,
     subtitle: field(root, "subtitle")?.value,
@@ -54,6 +63,7 @@ function readDraft(app) {
     startSceneId: field(root, "startSceneId")?.value,
     sections,
     playerMaps,
+    characterEntries,
     shopActorUuids: [...root.querySelectorAll('[data-collection="shops"] input:checked')].map((input) => input.value),
     questJournalUuids: [...root.querySelectorAll('[data-collection="quests"] input:checked')].map((input) => input.value),
     systemJournalUuids: [...root.querySelectorAll('[data-collection="systems"] input:checked')].map((input) => input.value)
@@ -129,6 +139,18 @@ async function onBrowseMap(_event, target) {
   });
 }
 
+async function onBrowseCharacter(_event, target) {
+  const actorUuid = target.dataset.uuid;
+  browsePath(this, target, "image", (path) => {
+    let entry = this.draft.characterEntries.find((candidate) => candidate.actorUuid === actorUuid);
+    if (!entry) {
+      entry = normalizeCharacterEntry({ actorUuid });
+      this.draft.characterEntries.push(entry);
+    }
+    entry.imageSrc = path;
+  });
+}
+
 async function onPreview() {
   readDraft(this);
   await globalThis.CampaignNexus?.preview?.(this.draft);
@@ -174,6 +196,7 @@ export function createConfigApplicationClass() {
         browseGlobal: onBrowseGlobal,
         browseSection: onBrowseSection,
         browseMap: onBrowseMap,
+        browseCharacter: onBrowseCharacter,
         preview: onPreview,
         reset: onReset
       }
@@ -192,6 +215,7 @@ export function createConfigApplicationClass() {
     async _prepareContext(options) {
       const context = await super._prepareContext(options);
       const selectedShops = new Set(this.draft.shopActorUuids);
+      const configuredCharacters = new Map(this.draft.characterEntries.map((entry) => [entry.actorUuid, entry]));
       const selectedQuests = new Set(this.draft.questJournalUuids);
       const selectedSystems = new Set(this.draft.systemJournalUuids);
 
@@ -212,12 +236,22 @@ export function createConfigApplicationClass() {
         last: index === items.length - 1
       }));
 
-      const actors = (game.actors?.contents ?? []).map((actor) => ({
-        uuid: actor.uuid,
-        name: actor.name,
-        img: actor.img,
-        selected: selectedShops.has(actor.uuid)
-      }));
+      const users = (game.users?.contents ?? [])
+        .filter((user) => !user.isGM)
+        .map((user) => ({ id: user.id, name: user.name }));
+      const actors = (game.actors?.contents ?? []).map((actor) => {
+        const character = configuredCharacters.get(actor.uuid);
+        const selectedUsers = new Set(character?.userIds ?? []);
+        return {
+          uuid: actor.uuid,
+          name: actor.name,
+          img: actor.img,
+          selected: selectedShops.has(actor.uuid),
+          characterSelected: Boolean(character),
+          characterImageSrc: character?.imageSrc ?? "",
+          characterUsers: users.map((user) => ({ ...user, selected: selectedUsers.has(user.id) }))
+        };
+      });
       const journals = (game.journal?.contents ?? []).map((journal) => ({
         uuid: journal.uuid,
         name: journal.name,

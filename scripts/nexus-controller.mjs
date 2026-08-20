@@ -1,5 +1,6 @@
 import {
   MODULE_ID,
+  MODULE_PATH,
   SOCKET_NAME,
   STYLISH_SHOP_IDS
 } from "./constants.mjs";
@@ -61,6 +62,8 @@ export class CampaignNexusController {
     this.locked = false;
     this.audio = null;
     this.lightbox = null;
+    this.characterUserId = "";
+    this.foundrySettingsActions = [];
     this.boundKeydown = this.#onKeydown.bind(this);
   }
 
@@ -222,14 +225,6 @@ export class CampaignNexusController {
   }
 
   #homeHtml() {
-    const cards = this.enabledSections.map((section) => {
-      const definition = sectionDefinition(section.id);
-      return `
-        <button type="button" class="cn-home-card" data-cn-action="navigate" data-section="${section.id}">
-          <span class="cn-home-card-icon"><i class="${definition?.icon ?? "fa-solid fa-diamond"}"></i></span>
-          <span>${escapeHtml(sectionLabel(section))}</span>
-        </button>`;
-    }).join("");
     return `
       <section class="cn-home-page">
         <div class="cn-home-hero">
@@ -237,7 +232,6 @@ export class CampaignNexusController {
           <h1>${escapeHtml(this.config.title)}</h1>
           ${this.config.subtitle ? `<p>${escapeHtml(this.config.subtitle)}</p>` : ""}
         </div>
-        <div class="cn-home-grid">${cards}</div>
       </section>`;
   }
 
@@ -275,20 +269,45 @@ export class CampaignNexusController {
     return `${this.#pageHeader("maps", maps.length)}${searchBar(localize("CampaignNexus.Search.Maps", "Search maps..."))}<div class="cn-library-grid">${cards || emptyState("fa-solid fa-map", localize("CampaignNexus.Empty.PlayerMaps", "The Game Master has not shared any maps yet."))}</div>`;
   }
 
-  #charactersHtml() {
-    const actors = (game.actors?.contents ?? []).filter((actor) => canObserve(actor));
-    const cards = actors.map((actor, index) => `
+  async #charactersHtml() {
+    const players = (game.users?.contents ?? []).filter((user) => !user.isGM);
+    const targetUser = game.user.isGM
+      ? (players.find((user) => user.id === this.characterUserId) ?? players[0] ?? game.user)
+      : game.user;
+    this.characterUserId = targetUser?.id ?? "";
+
+    const configured = await Promise.all(this.config.characterEntries.map(async (entry) => ({
+      entry,
+      actor: await globalThis.fromUuid?.(entry.actorUuid)
+    })));
+    const actors = configured.filter(({ entry, actor }) => (
+      actor
+      && entry.userIds.includes(targetUser.id)
+      && canObserve(actor, targetUser)
+    ));
+    const cards = actors.map(({ entry, actor }, index) => `
       <button type="button" class="cn-character-card" style="--cn-card-index:${index}" data-searchable="${escapeHtml(actor.name.toLowerCase())}" data-cn-action="open-document" data-uuid="${escapeHtml(actor.uuid)}">
-        <span class="cn-character-art"><img src="${escapeHtml(documentImage(actor))}" alt=""></span>
+        <span class="cn-character-art"><img src="${escapeHtml(entry.imageSrc || documentImage(actor))}" alt=""></span>
         <span class="cn-character-gradient"></span>
         <span class="cn-character-copy"><strong>${escapeHtml(actor.name)}</strong><small>${escapeHtml(actor.type ?? "")}</small></span>
       </button>`).join("");
-    return `${this.#pageHeader("characters", actors.length)}${searchBar(localize("CampaignNexus.Search.Characters", "Search characters..."))}<div class="cn-character-gallery">${cards || emptyState("fa-solid fa-users", localize("CampaignNexus.Empty.Characters", "No accessible characters found."))}</div>`;
+    const selector = game.user.isGM && players.length
+      ? `<div class="cn-player-selector" aria-label="${escapeHtml(localize("CampaignNexus.Characters.SelectPlayer", "Select player"))}">${players.map((user) => `
+          <button type="button" class="${user.id === targetUser.id ? "is-active" : ""}" data-cn-action="select-character-user" data-user-id="${escapeHtml(user.id)}">
+            <span>${escapeHtml(user.name.slice(0, 1).toUpperCase())}</span><strong>${escapeHtml(user.name)}</strong>
+          </button>`).join("")}</div>`
+      : "";
+    return `${this.#pageHeader("characters", actors.length)}${selector}${searchBar(localize("CampaignNexus.Search.Characters", "Search characters..."))}<div class="cn-character-gallery">${cards || emptyState("fa-solid fa-users", localize("CampaignNexus.Empty.Characters", "No configured characters are available for this player."))}</div>`;
   }
 
   #journalsHtml() {
     const journals = (game.journal?.contents ?? []).filter((journal) => canObserve(journal));
-    return `${this.#pageHeader("journals", journals.length)}${searchBar(localize("CampaignNexus.Search.Journals", "Search journals..."))}${this.#documentGrid(journals, "fa-solid fa-book-open", localize("CampaignNexus.Empty.Journals", "No accessible journals found."))}`;
+    const cards = journals.map((journal, index) => `
+      <button type="button" class="cn-journal-book-card" style="--cn-card-index:${index}" data-searchable="${escapeHtml(journal.name.toLowerCase())}" data-cn-action="open-document" data-uuid="${escapeHtml(journal.uuid)}">
+        <img src="${MODULE_PATH}/assets/journal-open-book.png" alt="">
+        <span>${escapeHtml(journal.name)}</span>
+      </button>`).join("");
+    return `${this.#pageHeader("journals", journals.length)}${searchBar(localize("CampaignNexus.Search.Journals", "Search journals..."))}<div class="cn-journal-grid">${cards || emptyState("fa-solid fa-book-open", localize("CampaignNexus.Empty.Journals", "No accessible journals found."))}</div>`;
   }
 
   async #curatedJournalHtml(id, uuids) {
@@ -344,14 +363,28 @@ export class CampaignNexusController {
       </section>`;
   }
 
-  #settingsHtml() {
-    const reduceMotion = game.settings.get(MODULE_ID, "reduceMotion");
-    return `
-      ${this.#pageHeader("settings")}
-      <section class="cn-settings-panel">
-        <label class="cn-setting-row"><span><strong>${escapeHtml(localize("CampaignNexus.Settings.ReduceMotion.Name", "Reduce motion"))}</strong><small>${escapeHtml(localize("CampaignNexus.Settings.ReduceMotion.Hint", "Disables most interface transitions on this browser."))}</small></span><input type="checkbox" data-cn-setting="reduceMotion" ${reduceMotion ? "checked" : ""}></label>
-        ${game.user.isGM ? `<button type="button" class="cn-button cn-button-primary" data-cn-action="configure"><i class="fa-solid fa-gear"></i>${escapeHtml(localize("CampaignNexus.Actions.Configure", "Configure Campaign Nexus"))}</button>` : ""}
-      </section>`;
+  async #settingsHtml() {
+    await Promise.resolve(ui.sidebar?.activateTab?.("settings"));
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    const settingsRoot = rootElement(ui.sidebar?.tabs?.settings?.element)
+      ?? document.querySelector("#sidebar #settings")
+      ?? document.querySelector('#sidebar [data-tab="settings"]');
+    const actions = settingsRoot
+      ? [...settingsRoot.querySelectorAll("button, a[href]")].filter((entry) => {
+        const label = entry.textContent?.replace(/\s+/g, " ").trim();
+        return label && !entry.disabled && !entry.closest(".window-header");
+      })
+      : [];
+    this.foundrySettingsActions = actions;
+    const cards = actions.map((entry, index) => {
+      const label = entry.textContent.replace(/\s+/g, " ").trim();
+      const icon = entry.querySelector("i")?.className || "fa-solid fa-gear";
+      return `<button type="button" class="cn-foundry-setting-card" data-cn-action="foundry-setting" data-index="${index}"><i class="${escapeHtml(icon)}"></i><span>${escapeHtml(label)}</span><i class="fa-solid fa-chevron-right"></i></button>`;
+    }).join("");
+    const body = cards
+      ? `<div class="cn-foundry-settings-grid">${cards}</div>`
+      : `<button type="button" class="cn-button cn-button-primary cn-settings-fallback" data-cn-action="open-settings-sidebar"><i class="fa-solid fa-gear"></i>${escapeHtml(localize("CampaignNexus.Settings.OpenFoundry", "Open Foundry settings"))}</button>`;
+    return `${this.#pageHeader("settings")}<section class="cn-settings-panel"><p class="cn-settings-intro">${escapeHtml(localize("CampaignNexus.Settings.FoundryHint", "These are the settings available in this Foundry world."))}</p>${body}</section>`;
   }
 
   #renderShell() {
@@ -480,6 +513,22 @@ export class CampaignNexusController {
       return this.renderCurrentSection();
     }
     if (action === "configure") return globalThis.CampaignNexus?.openConfiguration?.();
+    if (action === "select-character-user") {
+      this.characterUserId = target.dataset.userId;
+      return this.renderCurrentSection();
+    }
+    if (action === "foundry-setting") {
+      const source = this.foundrySettingsActions[Number(target.dataset.index)];
+      source?.click();
+      setTimeout(() => this.#raiseFoundryWindows(), 50);
+      setTimeout(() => this.#raiseFoundryWindows(), 250);
+      return;
+    }
+    if (action === "open-settings-sidebar") {
+      await this.close({ force: true });
+      await Promise.resolve(ui.sidebar?.activateTab?.("settings"));
+      return ui.sidebar?.expand?.();
+    }
     if (action === "show-all") return this.showToAll();
     if (action === "start-game") return this.startGame();
     if (action === "view-scene") {
@@ -539,5 +588,11 @@ export class CampaignNexusController {
       event.preventDefault();
       this.close();
     }
+  }
+
+  #raiseFoundryWindows() {
+    document.querySelectorAll(".application, .app.window-app").forEach((element) => {
+      if (!this.overlay.contains(element)) element.classList.add("cn-over-menu");
+    });
   }
 }

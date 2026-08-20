@@ -14,12 +14,20 @@
       "Send": "Enviar",
       "Unknown": "Desconhecido"
     },
+    "Characters": {
+      "SelectPlayer": "Selecionar jogador"
+    },
     "Config": {
       "AccentColor": "Cor de destaque",
       "AddMap": "Adicionar mapa",
       "Appearance": "Aparência",
       "Background": "Imagem ou vídeo de fundo global",
       "CampaignTitle": "Título da campanha",
+      "CharacterImage": "Imagem cinematográfica",
+      "CharacterPlayers": "Jogadores associados",
+      "Characters": "Personagens do Campaign Nexus",
+      "CharactersHint": "Escolha quais personagens aparecem, defina uma imagem opcional e associe cada uma aos jogadores que a poderão ver. As permissões do Foundry continuam a ser respeitadas.",
+      "ActorImageFallback": "Usar imagem do ator",
       "CuratedHint": "Selecione quais diários aparecem como missões e sistemas ou materiais de referência.",
       "CuratedJournals": "Missões e sistemas",
       "CustomLabel": "Nome personalizado (opcional)",
@@ -38,6 +46,7 @@
       "NoActors": "Nenhum ator encontrado.",
       "NoJournals": "Nenhum diário encontrado.",
       "NoPlayerMaps": "Nenhum mapa de jogador configurado.",
+      "NoPlayers": "Nenhum jogador encontrado.",
       "NoScene": "Não mudar de cena",
       "PlayerMaps": "Mapas dos jogadores",
       "PlayerMapsHint": "Os jogadores veem somente as imagens e vídeos adicionados aqui. Nunca recebem a lista de cenas do mestre.",
@@ -56,7 +65,7 @@
       "Transition": "Duração da transição (ms)"
     },
     "Empty": {
-      "Characters": "Nenhuma personagem acessível encontrada.",
+      "Characters": "Nenhuma personagem configurada está disponível para este jogador.",
       "Chat": "Ainda não há mensagens.",
       "Compendiums": "Nenhum compêndio acessível encontrado.",
       "Curated": "Nada foi adicionado aqui ainda.",
@@ -91,6 +100,8 @@
       "Systems": "Sistemas"
     },
     "Settings": {
+      "FoundryHint": "Estas são as definições disponíveis neste mundo do Foundry.",
+      "OpenFoundry": "Abrir definições do Foundry",
       "Configuration": { "Name": "Configuração do Campaign Nexus" },
       "LobbyState": { "Name": "Estado da sala do Campaign Nexus" },
       "Menu": {

@@ -48,6 +48,14 @@ export function normalizePlayerMap(value = {}) {
   };
 }
 
+export function normalizeCharacterEntry(value = {}) {
+  return {
+    actorUuid: String(value.actorUuid ?? "").trim(),
+    imageSrc: normalizePath(value.imageSrc),
+    userIds: normalizeUuidList(value.userIds)
+  };
+}
+
 export function normalizeSections(value) {
   const current = Array.isArray(value) ? value : [];
   const byId = new Map(current.map((section) => [section?.id, section]));
@@ -100,6 +108,11 @@ export function normalizeConfig(value = {}) {
     sections: normalizeSections(value.sections),
     playerMaps: Array.isArray(value.playerMaps)
       ? value.playerMaps.map(normalizePlayerMap)
+      : [],
+    characterEntries: Array.isArray(value.characterEntries)
+      ? value.characterEntries
+        .map(normalizeCharacterEntry)
+        .filter((entry, index, entries) => entry.actorUuid && entries.findIndex((candidate) => candidate.actorUuid === entry.actorUuid) === index)
       : [],
     shopActorUuids: normalizeUuidList(value.shopActorUuids),
     questJournalUuids: normalizeUuidList(value.questJournalUuids),
@@ -174,7 +187,9 @@ export function openFilePicker({ type = "imagevideo", current = "", callback }) 
     globalThis.ui?.notifications?.error(localize("CampaignNexus.Errors.FilePickerUnavailable"));
     return;
   }
-  new Picker({ type, current, callback }).render(true);
+  const picker = new Picker({ type, current, callback });
+  picker.render(true);
+  requestAnimationFrame(() => rootElement(picker.element)?.classList.add("cn-over-menu"));
 }
 
 export function selectedOptions(items, selectedValues) {

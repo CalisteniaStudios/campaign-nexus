@@ -102,6 +102,23 @@ body.campaign-nexus-active {
   border: 0;
   background: transparent;
   cursor: pointer;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.cn-brand:focus,
+.cn-brand:focus-visible,
+.cn-brand:active {
+  outline: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.cn-brand * {
+  user-select: none;
 }
 
 .cn-logo-slot {
@@ -247,8 +264,7 @@ body.campaign-nexus-active {
 .cn-home-page {
   display: grid;
   min-height: 100%;
-  align-content: center;
-  gap: clamp(2rem, 7vh, 5rem);
+  place-items: center;
 }
 
 .cn-home-hero {
@@ -293,46 +309,6 @@ body.campaign-nexus-active {
 
 .cn-ornament span:last-child {
   background: linear-gradient(90deg, var(--cn-accent), transparent);
-}
-
-.cn-home-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.8rem;
-}
-
-.cn-home-card {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  gap: 0.8rem;
-  min-width: 180px;
-  padding: 0.85rem 1.1rem;
-  text-align: left;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 4px;
-  background: rgba(5, 7, 12, 0.64);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
-  cursor: pointer;
-  backdrop-filter: blur(12px);
-  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
-}
-
-.cn-home-card:hover {
-  border-color: var(--cn-accent);
-  background: color-mix(in srgb, var(--cn-accent) 14%, rgba(5, 7, 12, 0.78));
-  transform: translateY(-5px);
-}
-
-.cn-home-card-icon {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  color: var(--cn-accent);
-  border: 1px solid color-mix(in srgb, var(--cn-accent) 55%, transparent);
-  border-radius: 50%;
 }
 
 .cn-page-header {
@@ -521,6 +497,47 @@ button.cn-library-card {
   scrollbar-color: var(--cn-accent) rgba(0, 0, 0, 0.25);
 }
 
+.cn-player-selector {
+  display: flex;
+  justify-content: center;
+  gap: 0.65rem;
+  width: min(100%, 1000px);
+  margin: 0 auto 1rem;
+  padding: 0.35rem;
+  overflow-x: auto;
+}
+
+.cn-player-selector button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 42px;
+  padding: 0.35rem 0.8rem 0.35rem 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(3, 5, 9, 0.7);
+  cursor: pointer;
+}
+
+.cn-player-selector button > span {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  color: #090a0c;
+  border-radius: 50%;
+  background: var(--cn-accent);
+  font-weight: 800;
+}
+
+.cn-player-selector button:hover,
+.cn-player-selector button.is-active {
+  color: var(--cn-accent);
+  border-color: var(--cn-accent);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--cn-accent) 16%, transparent);
+}
+
 .cn-character-card {
   position: relative;
   width: clamp(190px, 18vw, 280px);
@@ -588,6 +605,65 @@ button.cn-library-card {
   color: var(--cn-accent);
   letter-spacing: 0.1em;
   text-transform: uppercase;
+}
+
+.cn-journal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: clamp(1rem, 2.2vw, 2rem);
+  align-items: start;
+}
+
+.cn-journal-book-card {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 3 / 2;
+  min-width: 0;
+  padding: 0;
+  overflow: visible;
+  color: var(--cn-text);
+  border: 0;
+  outline: 0;
+  background: transparent;
+  cursor: pointer;
+  filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.48));
+  animation: cn-card-enter 420ms calc(var(--cn-card-index) * 45ms) both;
+  transition: transform 220ms ease, filter 220ms ease;
+}
+
+.cn-journal-book-card:hover,
+.cn-journal-book-card:focus-visible {
+  outline: 0;
+  transform: translateY(-8px) scale(1.025);
+  filter: drop-shadow(0 22px 28px rgba(0, 0, 0, 0.62));
+}
+
+.cn-journal-book-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border: 0;
+}
+
+.cn-journal-book-card > span {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 76%;
+  min-height: 50%;
+  padding: 1.2rem 1.6rem 1.5rem;
+  color: var(--cn-text);
+  text-align: center;
+  text-wrap: balance;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.28), 0 2px 5px rgba(0, 0, 0, 0.45);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1rem, 1.7vw, 1.45rem);
+  font-weight: 700;
+  line-height: 1.12;
 }
 
 .cn-pack-grid {
@@ -723,6 +799,54 @@ button.cn-library-card {
   border-radius: 8px;
   background: rgba(3, 5, 9, 0.72);
   backdrop-filter: blur(14px);
+}
+
+.cn-settings-intro {
+  margin: 0;
+  color: color-mix(in srgb, var(--cn-text) 72%, transparent);
+  text-align: center;
+}
+
+.cn-foundry-settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 0.7rem;
+}
+
+.cn-foundry-setting-card {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 58px;
+  padding: 0.65rem 0.8rem;
+  color: var(--cn-text);
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.055);
+  cursor: pointer;
+}
+
+.cn-foundry-setting-card > i:first-child {
+  color: var(--cn-accent);
+  text-align: center;
+  font-size: 1.15rem;
+}
+
+.cn-foundry-setting-card > i:last-child {
+  color: color-mix(in srgb, var(--cn-text) 45%, transparent);
+  font-size: 0.75rem;
+}
+
+.cn-foundry-setting-card:hover {
+  color: var(--cn-accent);
+  border-color: var(--cn-accent);
+  background: color-mix(in srgb, var(--cn-accent) 11%, rgba(255, 255, 255, 0.04));
+}
+
+.cn-settings-fallback {
+  justify-self: center;
 }
 
 .cn-setting-row {
@@ -1118,6 +1242,78 @@ button.cn-library-card {
   white-space: nowrap;
 }
 
+.cn-character-config-list {
+  display: grid;
+  gap: 0.55rem;
+  max-height: 520px;
+  margin-top: 0.8rem;
+  overflow-y: auto;
+}
+
+.cn-character-config-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.8fr) minmax(240px, 1fr) minmax(230px, 1fr);
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem;
+  border: 1px solid #303342;
+  border-radius: 5px;
+  background: #12141c;
+}
+
+.cn-character-toggle {
+  display: grid !important;
+  grid-template-columns: auto 40px minmax(0, 1fr);
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.cn-character-toggle img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border: 0;
+  border-radius: 3px;
+}
+
+.cn-character-toggle strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cn-character-image > span {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.cn-character-users {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.65rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid #343746;
+  border-radius: 4px;
+}
+
+.cn-character-users legend {
+  padding: 0 0.25rem;
+  color: #aeb0bc;
+  font-size: 0.72rem;
+}
+
+.cn-character-users label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.78rem;
+}
+
 .cn-curated-columns {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1237,6 +1433,7 @@ button.cn-library-card {
   .cn-config-grid.two-columns,
   .cn-config-grid.three-columns,
   .cn-curated-columns { grid-template-columns: 1fr; }
+  .cn-character-config-row { grid-template-columns: 1fr; }
   .cn-section-row { grid-template-columns: 34px 1fr auto; }
   .cn-section-row > input,
   .cn-section-row > .cn-inline-path { grid-column: 1 / -1; }
@@ -1249,8 +1446,8 @@ button.cn-library-card {
   .cn-header { min-height: 62px; }
   .cn-logo-slot { width: 40px; height: 40px; }
   .cn-content { padding: 1rem 0.7rem; }
-  .cn-home-card { min-width: 145px; flex: 1 1 145px; }
   .cn-library-grid { grid-template-columns: 1fr; }
+  .cn-journal-grid { grid-template-columns: 1fr; }
   .cn-character-card { min-width: 72vw; }
   .cn-footer .cn-button span { display: none; }
   .cn-config-footer { grid-template-columns: 1fr 1fr; }

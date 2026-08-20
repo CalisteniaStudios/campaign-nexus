@@ -14,12 +14,20 @@
       "Send": "Send",
       "Unknown": "Unknown"
     },
+    "Characters": {
+      "SelectPlayer": "Select player"
+    },
     "Config": {
       "AccentColor": "Accent color",
       "AddMap": "Add map",
       "Appearance": "Appearance",
       "Background": "Global background image or video",
       "CampaignTitle": "Campaign title",
+      "CharacterImage": "Cinematic image",
+      "CharacterPlayers": "Linked players",
+      "Characters": "Campaign Nexus characters",
+      "CharactersHint": "Choose which characters appear, set an optional display image, and link each one to the players who can see it. Foundry permissions are still enforced.",
+      "ActorImageFallback": "Use actor image",
       "CuratedHint": "Select which journals appear as quests and game systems/reference material.",
       "CuratedJournals": "Quests and systems",
       "CustomLabel": "Custom label (optional)",
@@ -38,6 +46,7 @@
       "NoActors": "No actors found.",
       "NoJournals": "No journals found.",
       "NoPlayerMaps": "No player maps configured.",
+      "NoPlayers": "No players found.",
       "NoScene": "Do not change scene",
       "PlayerMaps": "Player maps",
       "PlayerMapsHint": "Players only see the curated images and videos added here. They never receive the GM scene list.",
@@ -56,7 +65,7 @@
       "Transition": "Transition duration (ms)"
     },
     "Empty": {
-      "Characters": "No accessible characters found.",
+      "Characters": "No configured characters are available for this player.",
       "Chat": "No messages yet.",
       "Compendiums": "No accessible compendiums found.",
       "Curated": "Nothing has been added here yet.",
@@ -105,6 +114,8 @@
       "Systems": "Systems"
     },
     "Settings": {
+      "FoundryHint": "These are the settings available in this Foundry world.",
+      "OpenFoundry": "Open Foundry settings",
       "Configuration": { "Name": "Campaign Nexus configuration" },
       "LobbyState": { "Name": "Campaign Nexus lobby state" },
       "Menu": {
